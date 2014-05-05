@@ -21,7 +21,7 @@ import org.slf4j.LoggerFactory;
  */
 public class CameraFrameCapture implements IFrameCapture {
 
-    private static final int DEFAULT_FRAMES_COUNT = 30;
+    private static final int DEFAULT_FRAMES_COUNT = 100;
     private static final int DEFAULT_DEVICE = 0;
 
     private static final Logger logger = LoggerFactory.getLogger(CameraFrameCapture.class);
@@ -39,11 +39,21 @@ public class CameraFrameCapture implements IFrameCapture {
 
     @Override
     public void start() throws DEyesTrackerException {
-
+        if (!capture.isOpened()) {
+            try {
+                capture.open(DEFAULT_DEVICE);
+                Thread.sleep(1000);
+            } catch (InterruptedException ex) {
+                logger.error(ex.getMessage());
+            }
+        }
         if (capture.isOpened()) {
-            Mat webcam_image = new Mat();
             while (!isCanceled) {
+                final Mat webcam_image = new Mat();
                 capture.read(webcam_image);
+                if (!webcam_image.empty()) {
+                    frames.add(webcam_image);
+                }
             }
         } else {
             throw new DEyesTrackerException("capture init failure");

@@ -10,20 +10,25 @@ package by.zuyeu.deyestracker.trank;
  * Search for the faces
  * Display a circle around the faces using Java
  */
+import by.zuyeu.deyestracker.detection.FaceDetector;
+import by.zuyeu.deyestracker.exception.DEyesTrackerException;
+import by.zuyeu.deyestracker.video.CameraFrameCapture;
+import by.zuyeu.deyestracker.video.IFrameCapture;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.FutureTask;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
-import org.opencv.core.MatOfRect;
 import org.opencv.core.Point;
 import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
-import org.opencv.highgui.VideoCapture;
-import org.opencv.imgproc.Imgproc;
-import org.opencv.objdetect.CascadeClassifier;
 
 class My_Panel extends JPanel {
 
@@ -51,7 +56,7 @@ class My_Panel extends JPanel {
         final byte[] targetPixels = ((DataBufferByte) image.getRaster().getDataBuffer()).getData();
         System.arraycopy(sourcePixels, 0, targetPixels, 0, sourcePixels.length);
         long endTime = System.nanoTime();
-        System.out.println(String.format("Elapsed time: %.2f ms", (float) (endTime - startTime) / 1000000));
+        //System.out.println(String.format("Elapsed time: %.2f ms", (float) (endTime - startTime) / 1000000));
         return true;
     }
 
@@ -65,77 +70,73 @@ class My_Panel extends JPanel {
     }
 }
 
-class processor {
-
-    private CascadeClassifier face_cascade;
-
-    // Create a constructor method
-    public processor() {
-        face_cascade = new CascadeClassifier("D:\\Soft\\Development\\OpenCV\\opencv-2.4.8\\sources\\data\\haarcascades\\haarcascade_eye.xml");
-        if (face_cascade.empty()) {
-            System.out.println("--(!)Error loading A\n");
-            return;
-        } else {
-            System.out.println("Face classifier loooaaaaaded up");
-        }
-    }
-    //
-    private Mat mRgba = new Mat();
-    private Mat mGrey = new Mat();
-    private MatOfRect faces = new MatOfRect();
-
-    public Mat detect(Mat inputframe) {
-
-        inputframe.copyTo(mRgba);
-        inputframe.copyTo(mGrey);
-        Imgproc.cvtColor(mRgba, mGrey, Imgproc.COLOR_BGR2GRAY);
-        Imgproc.equalizeHist(mGrey, mGrey);
-        face_cascade.detectMultiScale(mGrey, faces);
-        System.out.println(String.format("Detected %s faces", faces.toArray().length));
-        for (Rect rect : faces.toArray()) {
-            Point center = new Point(rect.x, rect.y);
-            Core.rectangle(mRgba, center, new Point(rect.x + rect.width, rect.y + rect.height), new Scalar(255, 0, 255));
-        }
-        return mRgba;
-    }
-}
-
 public class DetectDemo {
 
-    public static void main(String arg[]) {
+    public static void main(String arg[]) throws DEyesTrackerException, InterruptedException, ExecutionException {
         // Load the native library.
         System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
         String window_name = "Capture - Face detection";
         JFrame frame = new JFrame(window_name);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(400, 400);
-        processor my_processor = new processor();
+        FaceDetector detector = new FaceDetector();
         My_Panel my_panel = new My_Panel();
         frame.setContentPane(my_panel);
         frame.setVisible(true);
         //-- 2. Read the video stream
-        Mat webcam_image = new Mat();
-        VideoCapture capture = new VideoCapture(0);
-        if (capture.isOpened()) {
-            while (true) {
-                capture.read(webcam_image);
-                if (!webcam_image.empty()) {
-                    frame.setSize(webcam_image.width() + 40, webcam_image.height() + 60);
-                    //-- 3. Apply the classifier to the captured image
-                    long startTime = System.nanoTime();
+        IFrameCapture capture = new CameraFrameCapture();
+        new Thread(capture).start();
+        Rect[] faces = new Rect[0];
+        final Scalar color = new Scalar(0, 255, 0);
 
-                    webcam_image = my_processor.detect(webcam_image);
-                    long endTime = System.nanoTime();
-                    System.out.println(String.format("detection time: %.2f ms", (float) (endTime - startTime) / 1000000));
-                    //-- 4. Display the image
-                    my_panel.MatToBufferedImage(webcam_image); // We could look at the error...
-                    my_panel.repaint();
-                } else {
-                    System.out.println(" --(!) No captured frame -- Break!");
-                    break;
+        ExecutorService executorService = Executors.newSingleThreadExecutor();
+        FutureTask<Rect[]> detectFutureTask = new FutureTask<>(new DetectTask(detector, null));
+        executorService.execute(detectFutureTask);
+
+        while (true) {
+            Mat webcam_image = capture.getNextFrame();
+            if (webcam_image != null && !webcam_image.empty()) {
+                if (detectFutureTask.isDone()) {
+                    System.out.println("detect done!");
+                    faces = detectFutureTask.get();
+                    detectFutureTask = new FutureTask<>(new DetectTask(detector, webcam_image));
+                    executorService.execute(detectFutureTask);
                 }
+                frame.setSize(webcam_image.width() + 40, webcam_image.height() + 60);
+                for (Rect face : faces) {
+                    Core.rectangle(webcam_image, new Point(face.x, face.y), new Point(face.x + face.width, face.y + face.height), color);
+                }
+                //-- 4. Display the image
+                my_panel.MatToBufferedImage(webcam_image); // We could look at the error...
+                my_panel.repaint();
             }
         }
-        return;
+    }
+}
+
+class DetectTask implements Callable<Rect[]> {
+
+    private final FaceDetector detector;
+    private final Mat frame;
+
+    public DetectTask(FaceDetector detector, Mat frame) {
+        this.detector = detector;
+        this.frame = frame;
+    }
+
+    @Override
+    public Rect[] call() throws Exception {
+        long startTime = System.nanoTime();
+        Rect[] result = null;
+        if (frame != null && !frame.empty()) {
+            result = detector.detectFaces(frame);
+        }
+        if (result == null) {
+            result = new Rect[0];
+        }
+        long endTime = System.nanoTime();
+        System.out.println(String.format("faces detected = %d", result.length));
+        System.out.println(String.format("detection time: %.2f ms", (float) (endTime - startTime) / 1000000));
+        return result;
     }
 }

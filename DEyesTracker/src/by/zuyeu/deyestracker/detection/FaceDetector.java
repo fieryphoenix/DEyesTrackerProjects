@@ -48,15 +48,15 @@ public class FaceDetector {
         }
     }
 
-    public Rect[] detectFaces(Mat inputframe) {
+    public Rect[] detectFaces(final Mat inputframe) {
         return detectWithClassifier(inputframe, faceCascade);
     }
 
-    public Rect[] detectEyes(Mat inputframe) {
+    public Rect[] detectEyes(final Mat inputframe) {
         return detectWithClassifier(inputframe, eyesCascade);
     }
 
-    private Rect[] detectWithClassifier(Mat inputframe, final CascadeClassifier classifier) {
+    private Rect[] detectWithClassifier(final Mat inputframe, final CascadeClassifier classifier) {
         final Mat mRgba = new Mat();
         final Mat mGrey = new Mat();
         final MatOfRect detectedObjects = new MatOfRect();

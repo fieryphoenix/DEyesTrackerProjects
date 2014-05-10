@@ -3,13 +3,13 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package by.zuyeu.deyestracker.event;
+package by.zuyeu.deyestracker.core.event;
 
 /**
  *
  * @author Fieryphoenix
  */
-public class EyesMoveEvent implements MoveEvent {
+public class HeadMoveEvent implements MoveEvent {
 
     @Override
     public void up() {
@@ -30,4 +30,5 @@ public class EyesMoveEvent implements MoveEvent {
     public void left() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
+
 }

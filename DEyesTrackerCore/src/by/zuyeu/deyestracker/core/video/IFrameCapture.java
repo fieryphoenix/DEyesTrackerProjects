@@ -3,9 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package by.zuyeu.deyestracker.video;
+package by.zuyeu.deyestracker.core.video;
 
-import by.zuyeu.deyestracker.exception.DEyesTrackerException;
+import by.zuyeu.deyestracker.core.exception.DEyesTrackerException;
 import java.util.concurrent.RunnableFuture;
 import org.opencv.core.Mat;
 

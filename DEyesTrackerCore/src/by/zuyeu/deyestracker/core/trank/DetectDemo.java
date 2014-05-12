@@ -84,18 +84,6 @@ public class DetectDemo {
 
     private static final Logger logger = LoggerFactory.getLogger(DetectDemo.class);
 
-    private static My_Panel testPanel;
-
-    private static void createTestPanel() {
-        JFrame frame = new JFrame("Test panel");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(400, 400);
-        My_Panel my_panel = new My_Panel();
-        frame.setContentPane(my_panel);
-        frame.setVisible(true);
-        testPanel = my_panel;
-    }
-
     public static void main(String arg[]) throws DEyesTrackerException, InterruptedException, ExecutionException {
         // Load the native library.
         System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
@@ -110,7 +98,6 @@ public class DetectDemo {
         frame.setContentPane(my_panel);
         frame.setVisible(true);
 
-        createTestPanel();
         //-- 2. Read the video stream
         IFrameCapture capture = new CameraFrameCapture();
         new Thread(capture).start();

@@ -9,13 +9,7 @@ package by.zuyeu.deyestracker.core.event;
  *
  * @author Fieryphoenix
  */
-public interface MoveEvent {
+public interface DEyeTrackEvent {
 
-    void up();
-
-    void down();
-
-    void right();
-
-    void left();
+    public Class<? extends DEyeTrackEvent> getType();
 }

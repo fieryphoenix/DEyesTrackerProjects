@@ -15,7 +15,7 @@ import org.opencv.core.Rect;
  */
 public class FaceDetector extends BaseDetector {
 
-    private static final String OPEN_CV_FACE_CASCADE = "D:\\Soft\\Development\\OpenCV\\opencv-2.4.8\\sources\\data\\haarcascades\\haarcascade_frontalface_default.xml";
+    private static final String OPEN_CV_FACE_CASCADE = "D:\\Soft\\Development\\OpenCV\\opencv-2.4.8\\sources\\data\\haarcascades\\haarcascade_frontalface_alt_tree.xml";
 
     public FaceDetector(String cascadePath) throws DEyesTrackerException {
         super(cascadePath);

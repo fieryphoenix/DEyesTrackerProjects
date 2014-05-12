@@ -27,6 +27,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.FutureTask;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import org.apache.commons.lang3.ArrayUtils;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfPoint;
@@ -83,6 +84,18 @@ public class DetectDemo {
 
     private static final Logger logger = LoggerFactory.getLogger(DetectDemo.class);
 
+    private static My_Panel testPanel;
+
+    private static void createTestPanel() {
+        JFrame frame = new JFrame("Test panel");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setSize(400, 400);
+        My_Panel my_panel = new My_Panel();
+        frame.setContentPane(my_panel);
+        frame.setVisible(true);
+        testPanel = my_panel;
+    }
+
     public static void main(String arg[]) throws DEyesTrackerException, InterruptedException, ExecutionException {
         // Load the native library.
         System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
@@ -91,10 +104,13 @@ public class DetectDemo {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(400, 400);
         final FaceDetector faceDetector = new FaceDetector();
-        final EyesDetector eyesDetector = new EyesDetector();
+        final EyesDetector leftEyeDetector = new EyesDetector(EyesDetector.EyesDetectType.LEFT);
+        final EyesDetector rightEyeDetector = new EyesDetector(EyesDetector.EyesDetectType.RIGHT);
         My_Panel my_panel = new My_Panel();
         frame.setContentPane(my_panel);
         frame.setVisible(true);
+
+        createTestPanel();
         //-- 2. Read the video stream
         IFrameCapture capture = new CameraFrameCapture();
         new Thread(capture).start();
@@ -111,6 +127,7 @@ public class DetectDemo {
         while (true) {
             Mat webcam_image = capture.getNextFrame();
             if (webcam_image != null && !webcam_image.empty()) {
+
                 if (detectFaceTask == null) {
                     detectFaceTask = createAndRunTask(new DetectFaceTask(faceDetector, webcam_image), executorService);
                 }
@@ -120,7 +137,8 @@ public class DetectDemo {
                         mainFace = findMainFace(faces);
                         final Mat faceImage = selectSubmatByRect(mainFace, webcam_image);
                         Mat faceImageForDetection = preProcessFaceRegion(faceImage);
-                        detectEyesTask = createAndRunTask(new DetectEyesTask(eyesDetector, faceImageForDetection), executorService);
+                        detectEyesTask = createAndRunTask(new DetectEyesTask(new EyesDetector[]{leftEyeDetector, rightEyeDetector}, faceImageForDetection), executorService
+                        );
                     }
                     if (detectEyesTask != null && detectEyesTask.isDone()) {
                         eyes = detectEyesTask.get();
@@ -159,40 +177,18 @@ public class DetectDemo {
 
     private static void drawContours(Mat webcam_image, Rect[] eyes) {
         List<MatOfPoint> contours = new ArrayList<>();
-        final Scalar contourColor = new Scalar(0, 0, 255);
         for (Rect rect : eyes) {
             Mat img = selectSubmatByRect(rect, webcam_image);
             contours.clear();
-            //TODO select onle central contour
-            findContoursOnImg(img, contours);
-            if (contours.size() > 0) {
-                Imgproc.drawContours(img, contours, -1, contourColor);
-                insertSubmatByRect(img, rect, webcam_image);
-            }
+            img = drawPupils(img);
+
+            insertSubmatByRect(img, rect, webcam_image);
         }
     }
 
-    private static Rect fixRectPosition(Rect rect, Point shiftPoint) {
-        logger.debug("fixRectPosition() - rect = {}, shift = {}", rect, shiftPoint);
-        rect.x = (int) (rect.x + shiftPoint.x);
-        rect.y = (int) (rect.y + shiftPoint.y);
-        logger.debug("fixRectPosition() - fixed rect = {}", rect);
-        return rect;
-    }
-
-    private static void findContoursOnImg(Mat img, List<MatOfPoint> contours) {
-        Mat imageHSV = new Mat(img.size(), Core.DEPTH_MASK_8U);
-        Mat imageBlurr = new Mat(img.size(), Core.DEPTH_MASK_8U);
-        Mat imageA = new Mat(img.size(), Core.DEPTH_MASK_ALL);
-        Imgproc.cvtColor(img, imageHSV, Imgproc.COLOR_BGR2GRAY);
-        Imgproc.GaussianBlur(imageHSV, imageBlurr, new Size(5, 5), 0);
-        Imgproc.adaptiveThreshold(imageBlurr, imageA, 255, Imgproc.ADAPTIVE_THRESH_MEAN_C, Imgproc.THRESH_BINARY, 7, 5);
-        Imgproc.findContours(imageA, contours, new Mat(), Imgproc.RETR_LIST, Imgproc.CHAIN_APPROX_SIMPLE);
-    }
-
     private static Mat preProcessFaceRegion(final Mat faceImage) {
-        //return faceImage.submat(0, faceImage.rows() * 7 / 10, 0, faceImage.cols());
-        return faceImage;
+        return faceImage.submat(0, faceImage.rows() / 2, 0, faceImage.cols());
+        //return faceImage;
     }
 
     private static void addRectangleToImage(Rect[] regions, Mat webcam_image, final Scalar color) {
@@ -242,10 +238,8 @@ public class DetectDemo {
     private static void insertSubmatByRect(Mat subImage, Rect rect, Mat origImage) {
         double colScale = 1.0 * origImage.cols() / origImage.width();
         int colStart = (int) (1.0 * rect.x * colScale);
-        int colEnd = (int) (1.0 * (rect.x + rect.width) * colScale);
         double rowScale = 1.0 * origImage.rows() / origImage.height();
         int rowStart = (int) (1.0 * rect.y * rowScale);
-        int rowEnd = (int) (1.0 * (rect.y + rect.height) * rowScale);
         for (int x1 = 0, x2 = colStart; x1 < subImage.cols(); x1++, x2++) {
             for (int y1 = 0, y2 = rowStart; y1 < subImage.rows(); y1++, y2++) {
                 final double[] subImgData = subImage.get(y1, x1);
@@ -253,6 +247,21 @@ public class DetectDemo {
             }
         }
     }
+
+    private static Mat drawPupils(Mat img) {
+        Mat imageHSV = new Mat(img.size(), Core.DEPTH_MASK_8U);
+        Imgproc.cvtColor(img, imageHSV, Imgproc.COLOR_BGR2GRAY);
+        final Size StructureElemSize = new Size(15, 15);
+        Imgproc.erode(imageHSV, imageHSV, Imgproc.getStructuringElement(Imgproc.MORPH_RECT, StructureElemSize));
+        Imgproc.dilate(imageHSV, imageHSV, Imgproc.getStructuringElement(Imgproc.MORPH_RECT, StructureElemSize));
+        Imgproc.GaussianBlur(imageHSV, imageHSV, StructureElemSize, 2);
+
+        Core.MinMaxLocResult mmG = Core.minMaxLoc(imageHSV);
+        Core.circle(img, mmG.minLoc, 3, RED);
+        logger.trace("pupil center = {}", mmG.minLoc);
+        return img;
+    }
+    private static final Scalar RED = new Scalar(0, 0, 255);
 }
 
 class DetectFaceTask implements Callable<Rect[]> {
@@ -288,23 +297,28 @@ class DetectEyesTask implements Callable<Rect[]> {
 
     private static final Logger logger = LoggerFactory.getLogger(DetectFaceTask.class);
 
-    private final EyesDetector detector;
+    private final EyesDetector[] detectors;
     private final Mat frame;
 
     public DetectEyesTask(EyesDetector detector, Mat frame) {
-        this.detector = detector;
+        this.detectors = new EyesDetector[]{detector};
+        this.frame = frame;
+    }
+
+    public DetectEyesTask(EyesDetector[] detectors, Mat frame) {
+        this.detectors = detectors;
         this.frame = frame;
     }
 
     @Override
     public Rect[] call() throws Exception {
         long startTime = System.nanoTime();
-        Rect[] result = null;
+        Rect[] result = new Rect[0];
         if (frame != null && !frame.empty()) {
-            result = detector.detectEyes(frame);
-        }
-        if (result == null) {
-            result = new Rect[0];
+            for (EyesDetector detector : detectors) {
+                Rect[] detectedEyes = detector.detectEyes(frame);
+                result = ArrayUtils.addAll(result, detectedEyes);
+            }
         }
         long endTime = System.nanoTime();
         logger.debug("eyes detected = {}", result.length);

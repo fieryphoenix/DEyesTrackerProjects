@@ -11,6 +11,8 @@ package by.zuyeu.deyestracker.core.exception;
  */
 public class DEyesTrackerException extends Exception {
 
+    private DEyesTrackerExceptionCode code;
+
     public DEyesTrackerException() {
     }
 
@@ -24,6 +26,30 @@ public class DEyesTrackerException extends Exception {
 
     public DEyesTrackerException(Throwable cause) {
         super(cause);
+    }
+
+    public DEyesTrackerException(DEyesTrackerExceptionCode code) {
+        this.code = code;
+    }
+
+    public DEyesTrackerException(DEyesTrackerExceptionCode code, String message) {
+        super(message);
+        this.code = code;
+    }
+
+    public DEyesTrackerException(DEyesTrackerExceptionCode code, String message, Throwable cause) {
+        super(message, cause);
+        this.code = code;
+    }
+
+    public DEyesTrackerException(DEyesTrackerExceptionCode code, Throwable cause) {
+        super(cause);
+        this.code = code;
+    }
+
+    @Override
+    public String toString() {
+        return "DEyesTrackerException{" + "code=" + code + '}';
     }
 
 }

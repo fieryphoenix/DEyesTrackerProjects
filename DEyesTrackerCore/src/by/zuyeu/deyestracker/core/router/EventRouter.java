@@ -16,7 +16,7 @@ import java.util.concurrent.ConcurrentHashMap;
  *
  * @author Fieryphoenix
  */
-public class EventRouter {
+public class EventRouter implements IRouter {
 
     private final Map<Class<? extends DEyeTrackEvent>, List<DEyesTrackerHandler>> handlers;
 
@@ -24,6 +24,7 @@ public class EventRouter {
         handlers = new ConcurrentHashMap<>();
     }
 
+    @Override
     public void registerHandler(final Class<? extends DEyeTrackEvent> event, final DEyesTrackerHandler handler) {
         if (!handlers.containsKey(event)) {
             handlers.put(event, new LinkedList<>());
@@ -32,6 +33,7 @@ public class EventRouter {
         classHandlers.add(handler);
     }
 
+    @Override
     public void deleteHandler(final Class<? extends DEyeTrackEvent> event, final DEyesTrackerHandler handler) {
         if (handlers.containsKey(event)) {
             final List<DEyesTrackerHandler> classHandlers = handlers.get(event);
@@ -39,6 +41,7 @@ public class EventRouter {
         }
     }
 
+    @Override
     public void sendEvent(DEyeTrackEvent event) {
         if (handlers.containsKey(event.getType())) {
             final List<DEyesTrackerHandler> classHandlers = handlers.get(event.getType());

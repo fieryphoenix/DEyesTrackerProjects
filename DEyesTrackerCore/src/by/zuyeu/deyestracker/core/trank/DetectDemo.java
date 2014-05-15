@@ -9,8 +9,8 @@ package by.zuyeu.deyestracker.core.trank;
  * Captures the camera stream with OpenCV
  * Search for the faces and eyes
  */
-import by.zuyeu.deyestracker.core.detection.EyesDetector;
-import by.zuyeu.deyestracker.core.detection.FaceDetector;
+import by.zuyeu.deyestracker.core.detection.detector.EyesDetector;
+import by.zuyeu.deyestracker.core.detection.detector.FaceDetector;
 import by.zuyeu.deyestracker.core.exception.DEyesTrackerException;
 import by.zuyeu.deyestracker.core.video.CameraFrameCapture;
 import by.zuyeu.deyestracker.core.video.IFrameCapture;

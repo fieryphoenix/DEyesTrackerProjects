@@ -19,7 +19,7 @@ import org.slf4j.LoggerFactory;
  */
 public class DetectEyesTask implements Callable<Rect[]> {
 
-    private static final Logger logger = LoggerFactory.getLogger(DetectEyesTask.class);
+    private static final Logger LOG = LoggerFactory.getLogger(DetectEyesTask.class);
 
     private final EyesDetector[] detectors;
     private final Mat frame;
@@ -45,8 +45,8 @@ public class DetectEyesTask implements Callable<Rect[]> {
             }
         }
         long endTime = System.nanoTime();
-        logger.debug("eyes detected = {}", result.length);
-        logger.debug("detection time: {} ms", (float) (endTime - startTime) / 1000000);
+        LOG.debug("eyes detected = {}", result.length);
+        LOG.debug("detection time: {} ms", (float) (endTime - startTime) / 1000000);
         return result;
     }
 }

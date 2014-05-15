@@ -20,7 +20,7 @@ import org.slf4j.LoggerFactory;
  */
 public class BaseDetector {
 
-    protected static final Logger logger = LoggerFactory.getLogger(BaseDetector.class);
+    private static final Logger LOG = LoggerFactory.getLogger(BaseDetector.class);
     protected CascadeClassifier cascade;
 
     private BaseDetector() {
@@ -31,7 +31,7 @@ public class BaseDetector {
         if (cascade.empty()) {
             throw new DEyesTrackerException("Error loading face cascade");
         } else {
-            logger.debug("classifier loooaaaaaded up");
+            LOG.debug("classifier loooaaaaaded up");
         }
     }
 
@@ -40,6 +40,8 @@ public class BaseDetector {
     }
 
     protected Rect[] detectWithClassifier(final Mat inputframe, final CascadeClassifier classifier) {
+        LOG.debug("detectWithClassifier - start;");
+
         final Mat mRgba = new Mat();
         final Mat mGrey = new Mat();
         final MatOfRect detectedObjects = new MatOfRect();
@@ -48,6 +50,8 @@ public class BaseDetector {
         Imgproc.cvtColor(mRgba, mGrey, Imgproc.COLOR_BGR2GRAY);
         Imgproc.equalizeHist(mGrey, mGrey);
         classifier.detectMultiScale(mGrey, detectedObjects);
+
+        LOG.debug("detectWithClassifier - end;");
         return detectedObjects.toArray();
     }
 

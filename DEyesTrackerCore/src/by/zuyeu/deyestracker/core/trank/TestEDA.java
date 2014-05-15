@@ -21,6 +21,6 @@ public class TestEDA {
         router.registerHandler(CoreEvent.class, (DEyesTrackerHandler) (DEyeTrackEvent event) -> {
             System.out.println("OK!");
         });
-        router.sendEvent(new CoreEvent(CoreEvent.Action.START_DETECTION));
+        router.sendEvent(new CoreEvent(CoreEvent.EventType.START_DETECTION));
     }
 }

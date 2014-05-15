@@ -20,7 +20,7 @@ import org.slf4j.LoggerFactory;
  */
 public class DetectPupilsTask implements Callable<Point> {
 
-    private static final Logger logger = LoggerFactory.getLogger(DetectPupilsTask.class);
+    private static final Logger LOG = LoggerFactory.getLogger(DetectPupilsTask.class);
 
     private final Mat frame;
 
@@ -42,8 +42,8 @@ public class DetectPupilsTask implements Callable<Point> {
         Core.MinMaxLocResult mmG = Core.minMaxLoc(imageHSV);
 
         long endTime = System.nanoTime();
-        logger.debug("pupil detected = {}", mmG.minLoc);
-        logger.debug("detection time: {} ms", (float) (endTime - startTime) / 1000000);
+        LOG.debug("pupil detected = {}", mmG.minLoc);
+        LOG.debug("detection time: {} ms", (float) (endTime - startTime) / 1000000);
         return mmG.minLoc;
     }
 }

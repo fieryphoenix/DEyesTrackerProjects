@@ -18,7 +18,7 @@ import org.slf4j.LoggerFactory;
  */
 public class DetectFaceTask implements Callable<Rect> {
 
-    private static final Logger logger = LoggerFactory.getLogger(DetectFaceTask.class);
+    private static final Logger LOG = LoggerFactory.getLogger(DetectFaceTask.class);
 
     private final FaceDetector detector;
     private final Mat frame;
@@ -36,8 +36,8 @@ public class DetectFaceTask implements Callable<Rect> {
             result = detector.detectMain(frame);
         }
         long endTime = System.nanoTime();
-        logger.debug("face detected = {}", result);
-        logger.debug("detection time: {} ms", (float) (endTime - startTime) / 1000000);
+        LOG.debug("face detected = {}", result);
+        LOG.debug("detection time: {} ms", (float) (endTime - startTime) / 1000000);
         return result;
     }
 }

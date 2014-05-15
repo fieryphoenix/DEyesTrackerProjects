@@ -33,7 +33,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author Fieryphoenix
  */
-public class FaceInfoSampler {
+public class FaceInfoSampler implements ISampler {
 
     private static final Logger LOG = LoggerFactory.getLogger(FaceInfoSampler.class);
 
@@ -78,12 +78,14 @@ public class FaceInfoSampler {
         LOG.trace("initDetectors - end;");
     }
 
+    @Override
     public void close() {
         if (capture != null) {
             capture.stop();
         }
     }
 
+    @Override
     public DetectFaceSample makeSample() throws DEyesTrackerException {
         LOG.info("makeSample() - start;");
 
@@ -91,7 +93,7 @@ public class FaceInfoSampler {
 
         final Mat webcamImage = receiveLastWebcamFrame();
 
-        //TODO think about improving performance
+        //TODO: think about improving performance
         final Rect mainFace = getMainFace(webcamImage);
         Rect[] eyes = null;
 
@@ -201,11 +203,10 @@ public class FaceInfoSampler {
 
     private void pupilsStabilization() {
         //TODO think about algorithm
-
     }
 
+    @Override
     public IFrameCapture getCapture() {
         return capture;
     }
-
 }

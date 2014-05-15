@@ -13,18 +13,18 @@ import java.util.Objects;
  */
 public class CoreEvent implements DEyeTrackEvent {
 
-    public static enum Action {
+    public static enum EventType {
 
-        START_DETECTION, HOLD_DETECTION;
+        START_DETECTION, HOLD_DETECTION, INIT_FAILURE, NO_CAMERA, BAD_IMAGE, STUDY_ABSENCE;
     }
 
-    private final Action action;
+    private final EventType action;
 
-    public CoreEvent(Action action) {
+    public CoreEvent(EventType action) {
         this.action = action;
     }
 
-    public Action getAction() {
+    public EventType getAction() {
         return action;
     }
 

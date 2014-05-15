@@ -31,7 +31,7 @@ public class FaceDetector extends BaseDetector {
     }
 
     public Rect[] detectFaces(final Mat inputframe) {
-        //TODO - add pre and post processing
+        //TODO - add post processing
         return detectWithClassifier(inputframe, cascade);
     }
 

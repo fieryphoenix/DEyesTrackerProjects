@@ -52,4 +52,7 @@ public class DEyesTrackerException extends Exception {
         return "DEyesTrackerException{" + "code=" + code + '}';
     }
 
+    public DEyesTrackerExceptionCode getCode() {
+        return code;
+    }
 }

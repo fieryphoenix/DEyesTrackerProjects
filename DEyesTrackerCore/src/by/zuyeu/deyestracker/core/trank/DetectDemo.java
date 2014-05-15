@@ -32,16 +32,11 @@ import org.opencv.core.Scalar;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-class My_Panel extends JPanel {
+class DemoPanel extends JPanel {
 
     private static final long serialVersionUID = 1L;
 
     private BufferedImage image;
-
-    // Create a constructor method
-    public My_Panel() {
-        super();
-    }
 
     /**
      * Converts/writes a Mat into a BufferedImage.
@@ -50,7 +45,7 @@ class My_Panel extends JPanel {
      * @return BufferedImage of type TYPE_3BYTE_BGR or TYPE_BYTE_GRAY
      */
     public boolean MatToBufferedImage(Mat matBGR) {
-        long startTime = System.nanoTime();
+
         int width = matBGR.width(), height = matBGR.height(), channels = matBGR.channels();
         byte[] sourcePixels = new byte[width * height * channels];
         matBGR.get(0, 0, sourcePixels);
@@ -58,8 +53,7 @@ class My_Panel extends JPanel {
         image = new BufferedImage(width, height, BufferedImage.TYPE_3BYTE_BGR);
         final byte[] targetPixels = ((DataBufferByte) image.getRaster().getDataBuffer()).getData();
         System.arraycopy(sourcePixels, 0, targetPixels, 0, sourcePixels.length);
-        long endTime = System.nanoTime();
-        //System.out.println(String.format("Elapsed time: %.2f ms", (float) (endTime - startTime) / 1000000));
+
         return true;
     }
 
@@ -69,7 +63,6 @@ class My_Panel extends JPanel {
             return;
         }
         g.drawImage(this.image, 10, 10, this.image.getWidth(), this.image.getHeight(), null);
-        //g.drawString("This is my custom Panel!",10,20);
     }
 }
 
@@ -79,12 +72,12 @@ public class DetectDemo {
 
     public static void main(String arg[]) throws DEyesTrackerException, InterruptedException, ExecutionException {
 
-        String window_name = "Capture - Face detection";
-        JFrame frame = new JFrame(window_name);
+        final String windowName = "Capture - Face detection";
+        final JFrame frame = new JFrame(windowName);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(400, 400);
-        My_Panel my_panel = new My_Panel();
-        frame.setContentPane(my_panel);
+        final DemoPanel demoPanel = new DemoPanel();
+        frame.setContentPane(demoPanel);
         frame.setVisible(true);
 
         //-- 2. Read the video stream
@@ -124,8 +117,8 @@ public class DetectDemo {
                 }
 
                 //-- 4. Display the image
-                my_panel.MatToBufferedImage(webcam_image); // We could look at the error...
-                my_panel.repaint();
+                demoPanel.MatToBufferedImage(webcam_image); // We could look at the error...
+                demoPanel.repaint();
             }
         }
     }

@@ -12,11 +12,16 @@ package by.zuyeu.deyestracker.core.trank;
 import by.zuyeu.deyestracker.core.exception.DEyesTrackerException;
 import by.zuyeu.deyestracker.core.model.DetectFaceSample;
 import by.zuyeu.deyestracker.core.sampler.FaceInfoSampler;
+import by.zuyeu.deyestracker.core.util.TaskUtils;
 import by.zuyeu.deyestracker.core.video.IFrameCapture;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.FutureTask;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import org.opencv.core.Core;
@@ -88,12 +93,19 @@ public class DetectDemo {
         final Scalar faceRegionColor = new Scalar(0, 255, 0);
         final Scalar eyesRegionColor = new Scalar(120, 120, 120);
 
+        final ExecutorService executorService = Executors.newSingleThreadExecutor();
+        FutureTask<DetectFaceSample> detectFaceTask = TaskUtils.wrapFutureAnd(new DetectTask(sampler), executorService);
+        DetectFaceSample sample = new DetectFaceSample();
         while (true) {
             final Mat webcam_image = capture.getNextFrame();
             if (webcam_image != null && !webcam_image.empty()) {
                 frame.setSize(webcam_image.width() + 40, webcam_image.height() + 60);
 
-                DetectFaceSample sample = sampler.makeSample();
+                if (detectFaceTask.isDone()) {
+                    sample = detectFaceTask.get();
+
+                    detectFaceTask = TaskUtils.wrapFutureAnd(new DetectTask(sampler), executorService);
+                }
 
                 if (sample.getFace() != null) {
                     addRectangleToImage(sample.getFace(), webcam_image, faceRegionColor);
@@ -104,8 +116,12 @@ public class DetectDemo {
                 if (sample.getRightEye() != null) {
                     addRectangleToImage(sample.getRightEye(), webcam_image, eyesRegionColor);
                 }
-                drawCircle(webcam_image, sample.getLeftPupil());
-                drawCircle(webcam_image, sample.getRightPupil());
+                if (sample.getLeftPupil() != null) {
+                    drawCircle(webcam_image, sample.getLeftPupil());
+                }
+                if (sample.getRightPupil() != null) {
+                    drawCircle(webcam_image, sample.getRightPupil());
+                }
 
                 //-- 4. Display the image
                 my_panel.MatToBufferedImage(webcam_image); // We could look at the error...
@@ -124,4 +140,19 @@ public class DetectDemo {
         }
     }
     private static final Scalar RED = new Scalar(0, 0, 255);
+}
+
+class DetectTask implements Callable<DetectFaceSample> {
+
+    private final FaceInfoSampler sampler;
+
+    public DetectTask(FaceInfoSampler sampler) {
+        this.sampler = sampler;
+    }
+
+    @Override
+    public DetectFaceSample call() throws Exception {
+        DetectFaceSample sample = sampler.makeSample();
+        return sample;
+    }
 }

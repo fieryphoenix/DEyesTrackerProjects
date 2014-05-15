@@ -98,8 +98,6 @@ public class FaceInfoSampler {
         if (mainFace != null) {
             sample.setFace(mainFace);
             eyes = getEyesRegions(mainFace, webcamImage, eyes);
-            // fix rect coordinates to match whole frame size
-            CVCoreUtils.fixRectTLFromSubmat(eyes, mainFace);
         }
         if (mainFace != null && eyes != null) {
             final int faceCenter = mainFace.x + mainFace.width / 2;
@@ -115,7 +113,7 @@ public class FaceInfoSampler {
 
             // start detect pupils
             sample.setLeftPupil(findPupil(sample.getLeftEye(), webcamImage));
-            sample.setLeftPupil(findPupil(sample.getRightEye(), webcamImage));
+            sample.setRightPupil(findPupil(sample.getRightEye(), webcamImage));
         }
         if (sample.getLeftPupil() != null || sample.getRightPupil() != null) {
             pupilsStabilization();
@@ -149,13 +147,17 @@ public class FaceInfoSampler {
 
         Point pupil = null;
         if (eye != null) {
-            final Mat eyeRegion = CVCoreUtils.selectSubmatByRect(eye, webcamImage);
+            Rect pupilRegion = shrinkEyeRegionForPupil(eye);
+            final Mat eyeRegion = CVCoreUtils.selectSubmatByRect(pupilRegion, webcamImage);
             final FutureTask<Point> detectPupilTask = TaskUtils.wrapFutureAnd(new DetectPupilsTask(eyeRegion), executorService
             );
             try {
                 pupil = detectPupilTask.get();
             } catch (InterruptedException | ExecutionException ex) {
                 LOG.error(ex.getMessage());
+            }
+            if (pupil != null) {
+                pupil = CVCoreUtils.fixPointFromSubmat(pupil, pupilRegion);
             }
         }
 
@@ -175,13 +177,26 @@ public class FaceInfoSampler {
         } catch (InterruptedException | ExecutionException ex) {
             LOG.error(ex.getMessage());
         }
+        // fix rect coordinates to match whole frame size
+        if (eyes != null) {
+            CVCoreUtils.fixRectTLFromSubmat(eyes, mainFace);
+        }
 
         LOG.trace("getPupilsPoints - end: eyes = {}", eyes);
         return eyes;
     }
 
-    private static Mat selectEyesRegionFromFace(final Mat faceImage) {
+    private Mat selectEyesRegionFromFace(final Mat faceImage) {
         return faceImage.submat(0, faceImage.rows() / 2, 0, faceImage.cols());
+    }
+
+    private Rect shrinkEyeRegionForPupil(Rect eye) {
+        Rect resized = eye.clone();
+        resized.x += resized.width / 10;
+        resized.y += resized.height / 10;
+        resized.width -= resized.width / 10 * 2;
+        resized.height -= resized.height / 10 * 2;
+        return resized;
     }
 
     private void pupilsStabilization() {

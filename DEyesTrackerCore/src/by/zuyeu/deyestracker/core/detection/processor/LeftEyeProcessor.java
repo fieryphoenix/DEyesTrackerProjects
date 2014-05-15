@@ -5,6 +5,7 @@
  */
 package by.zuyeu.deyestracker.core.detection.processor;
 
+import by.zuyeu.deyestracker.core.comparator.RectXComparator;
 import java.util.Arrays;
 import java.util.Optional;
 import org.opencv.core.Rect;
@@ -15,20 +16,14 @@ import org.opencv.core.Rect;
  */
 public class LeftEyeProcessor implements IProcessor<Rect[], Rect[]> {
 
+    private final RectXComparator comparator = new RectXComparator();
+
     @Override
     public Rect[] process(Rect[] input) {
         if (input.length < 2) {
             return input;
         }
-        final Optional<Rect> leftEye = Arrays.stream(input).max((Rect o1, Rect o2) -> {
-            if (o1.x > o2.x) {
-                return 1;
-            } else if (o1.x < o2.x) {
-                return -1;
-            } else {
-                return 0;
-            }
-        });
+        final Optional<Rect> leftEye = Arrays.stream(input).max(comparator);
         return new Rect[]{leftEye.get()};
     }
 }

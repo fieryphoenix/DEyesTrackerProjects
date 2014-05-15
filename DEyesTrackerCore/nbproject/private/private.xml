@@ -5,17 +5,12 @@
             <url>src/by/zuyeu/deyestracker/core/trank/DetectDemo.java</url>
             <bookmark id="1">
                 <name/>
-                <line>130</line>
+                <line>92</line>
                 <key/>
             </bookmark>
         </file>
     </editor-bookmarks>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
-        <group>
-            <file>file:/D:/ProjectRepository/netbeans/DEyesTrackerProject/DEyesTrackerCore/src/by/zuyeu/deyestracker/core/video/CameraFrameCapture.java</file>
-            <file>file:/D:/ProjectRepository/netbeans/DEyesTrackerProject/DEyesTrackerCore/src/by/zuyeu/deyestracker/core/detection/tracker/DetectFaceInfoModel.java</file>
-            <file>file:/D:/ProjectRepository/netbeans/DEyesTrackerProject/DEyesTrackerCore/src/by/zuyeu/deyestracker/core/trank/DetectDemo.java</file>
-            <file>file:/D:/ProjectRepository/netbeans/DEyesTrackerProject/DEyesTrackerCore/src/by/zuyeu/deyestracker/core/detection/tracker/ScreenPointTracker.java</file>
-        </group>
+        <group/>
     </open-files>
 </project-private>

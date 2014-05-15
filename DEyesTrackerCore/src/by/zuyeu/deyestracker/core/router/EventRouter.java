@@ -11,12 +11,16 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
  * @author Fieryphoenix
  */
 public class EventRouter implements IRouter {
+
+    private static final Logger LOG = LoggerFactory.getLogger(EventRouter.class);
 
     private final Map<Class<? extends DEyeTrackEvent>, List<DEyesTrackerHandler>> handlers;
 
@@ -26,28 +30,40 @@ public class EventRouter implements IRouter {
 
     @Override
     public void registerHandler(final Class<? extends DEyeTrackEvent> event, final DEyesTrackerHandler handler) {
+        LOG.info("registerHandler() - start: event = {}, handler = {}", event, handler);
+
         if (!handlers.containsKey(event)) {
             handlers.put(event, new LinkedList<>());
         }
-        List<DEyesTrackerHandler> classHandlers = handlers.get(event);
+        final List<DEyesTrackerHandler> classHandlers = handlers.get(event);
         classHandlers.add(handler);
+
+        LOG.info("registerHandler() - end;");
     }
 
     @Override
     public void deleteHandler(final Class<? extends DEyeTrackEvent> event, final DEyesTrackerHandler handler) {
+        LOG.info("deleteHandler() - start: event = {}, handler = {}", event, handler);
+
         if (handlers.containsKey(event)) {
             final List<DEyesTrackerHandler> classHandlers = handlers.get(event);
             classHandlers.remove(handler);
         }
+
+        LOG.info("deleteHandler() - end;");
     }
 
     @Override
     public void sendEvent(DEyeTrackEvent event) {
+        LOG.info("sendEvent() - start: event = {}", event);
+
         if (handlers.containsKey(event.getType())) {
             final List<DEyesTrackerHandler> classHandlers = handlers.get(event.getType());
             classHandlers.stream().parallel().forEach(c -> {
                 c.handle(event);
             });
         }
+
+        LOG.info("sendEvent() - end;");
     }
 }

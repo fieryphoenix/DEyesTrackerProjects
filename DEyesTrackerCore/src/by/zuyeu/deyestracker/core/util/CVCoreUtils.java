@@ -56,4 +56,56 @@ public class CVCoreUtils {
             }
         }
     }
+
+    public static Point sumPoints(Point p1, Point p2) {
+        if (p1 == null && p2 == null) {
+            return null;
+        }
+        if (p1 == null && p2 != null) {
+            return p2;
+        }
+        if (p2 == null && p1 != null) {
+            return p1;
+        }
+        final Point sum = new Point();
+        sum.x = p1.x + p2.x;
+        sum.y = p1.y + p2.y;
+
+        return sum;
+    }
+
+    public static Rect sumRect(Rect r1, Rect r2) {
+        if (r1 == null && r2 == null) {
+            return null;
+        }
+        if (r1 == null && r2 != null) {
+            return r2;
+        }
+        if (r2 == null && r1 != null) {
+            return r1;
+        }
+        final Rect sum = new Rect();
+        sum.x = r1.x + r2.x;
+        sum.y = r1.y + r2.y;
+        sum.width = r1.width + r2.width;
+        sum.height = r1.height + r2.height;
+
+        return sum;
+    }
+
+    public static Point dividePoint(Point p, int divider) {
+        final Point result = new Point();
+        result.x = p.x / divider;
+        result.y = p.y / divider;
+        return result;
+    }
+
+    public static Rect divideRect(Rect p, int divider) {
+        final Rect result = new Rect();
+        result.x = p.x / divider;
+        result.y = p.y / divider;
+        result.width = p.width / divider;
+        result.height = p.height / divider;
+        return result;
+    }
 }

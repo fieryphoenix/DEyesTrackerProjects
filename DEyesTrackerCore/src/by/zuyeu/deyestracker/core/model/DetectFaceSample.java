@@ -23,6 +23,14 @@ public class DetectFaceSample {
     public DetectFaceSample() {
     }
 
+    public DetectFaceSample(final boolean fillWithZero) {
+        face = new Rect(0, 0, 0, 0);
+        leftEye = new Rect(0, 0, 0, 0);
+        rightEye = new Rect(0, 0, 0, 0);
+        leftPupil = new Point(0, 0);
+        rightPupil = new Point(0, 0);
+    }
+
     public Point getLeftPupil() {
         return leftPupil;
     }
@@ -68,4 +76,23 @@ public class DetectFaceSample {
         return "DetectFaceSample{" + "leftPupil=" + leftPupil + ", rightPupil=" + rightPupil + ", leftEye=" + leftEye + ", rightEye=" + rightEye + ", face=" + face + '}';
     }
 
+    public boolean isComplete() {
+        boolean isComplete = true;
+        if (face == null) {
+            isComplete = false;
+        }
+        if (leftEye == null) {
+            isComplete = false;
+        }
+        if (leftPupil == null) {
+            isComplete = false;
+        }
+        if (rightEye == null) {
+            isComplete = false;
+        }
+        if (rightPupil == null) {
+            isComplete = false;
+        }
+        return isComplete;
+    }
 }

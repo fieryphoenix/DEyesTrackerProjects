@@ -25,6 +25,53 @@ import org.slf4j.LoggerFactory;
  */
 public class ScreenPointTracker {
 
+    static class ScreenPointTrackerBuilder {
+
+        private ISampler sampler;
+        private IRouter router;
+        private StudyResult studyResult;
+
+        public ScreenPointTrackerBuilder() {
+        }
+
+        public ScreenPointTrackerBuilder setSampler(ISampler sampler) {
+            this.sampler = sampler;
+            return this;
+        }
+
+        public ScreenPointTrackerBuilder setRouter(IRouter router) {
+            this.router = router;
+            return this;
+        }
+
+        public ScreenPointTrackerBuilder setStudyResult(StudyResult studyResult) {
+            this.studyResult = studyResult;
+            return this;
+        }
+
+        public ScreenPointTracker createScreenPointTracker() throws DEyesTrackerException {
+            final ScreenPointTracker screenPointTracker = new ScreenPointTracker(true);
+
+            if (router != null) {
+                screenPointTracker.setRouter(router);
+            } else {
+                screenPointTracker.initRouter();
+            }
+            if (sampler != null) {
+                screenPointTracker.setSampler(sampler);
+            } else {
+                screenPointTracker.openSampler();
+            }
+            if (studyResult != null) {
+                screenPointTracker.setStudyResult(studyResult);
+            } else {
+                screenPointTracker.startStuding();
+            }
+            return screenPointTracker;
+        }
+
+    }
+
     private static final Logger LOG = LoggerFactory.getLogger(ScreenPointTracker.class);
 
     private IRouter router;
@@ -32,23 +79,16 @@ public class ScreenPointTracker {
     private CircularFifoQueue<DetectFaceSample> samples;
     private StudyResult studyResult;
 
-    public ScreenPointTracker() throws DEyesTrackerException {
-        initRouter();
-        try {
+    protected ScreenPointTracker(final boolean skipInit) throws DEyesTrackerException {
+        if (!skipInit) {
+            initRouter();
             openSampler();
-        } catch (final DEyesTrackerException e) {
-            dispatchException(e);
-            throw e;
+            startStuding();
         }
-        startStuding();
-    }
-
-    public ScreenPointTracker(final StudyResult studyResult) throws DEyesTrackerException {
-        this.studyResult = studyResult;
     }
 
     public void start() throws DEyesTrackerException {
-
+        //TODO
     }
 
     public IRouter getRouter() {
@@ -63,7 +103,12 @@ public class ScreenPointTracker {
 
     private void openSampler() throws DEyesTrackerException {
         LOG.trace("openSampler - start;");
-        sampler = new FaceInfoSampler();
+        try {
+            sampler = new FaceInfoSampler();
+        } catch (final DEyesTrackerException e) {
+            dispatchException(e);
+            throw e;
+        }
         LOG.trace("openSampler - end;");
     }
 
@@ -78,6 +123,24 @@ public class ScreenPointTracker {
     private void dispatchException(final DEyesTrackerException e) {
         DEyesTrackerExceptionCode code = e.getCode();
         CoreEvent.EventType item = ExceptionToEventConverter.getEventFromException(code);
-        router.sendEvent(new CoreEvent(item));
+        publishEvent(item);
+    }
+
+    protected void publishEvent(CoreEvent.EventType item) {
+        if (router != null && item != null) {
+            router.sendEvent(new CoreEvent(item));
+        }
+    }
+
+    private void setRouter(IRouter router) {
+        this.router = router;
+    }
+
+    private void setSampler(ISampler sampler) {
+        this.sampler = sampler;
+    }
+
+    private void setStudyResult(StudyResult studyResult) {
+        this.studyResult = studyResult;
     }
 }

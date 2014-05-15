@@ -6,7 +6,7 @@
 package by.zuyeu.deyestracker.core.detection.tracker;
 
 import by.zuyeu.deyestracker.core.exception.DEyesTrackerException;
-import by.zuyeu.deyestracker.core.model.DetectFaceInfoModel;
+import by.zuyeu.deyestracker.core.model.DetectFaceSample;
 import by.zuyeu.deyestracker.core.model.StudyResult;
 import by.zuyeu.deyestracker.core.router.EventRouter;
 import org.apache.commons.collections4.queue.CircularFifoQueue;
@@ -22,10 +22,11 @@ public class ScreenPointTracker {
     private static final Logger logger = LoggerFactory.getLogger(ScreenPointTracker.class);
 
     private EventRouter router;
-    private CircularFifoQueue<DetectFaceInfoModel> detectItems;
+    private CircularFifoQueue<DetectFaceSample> samples;
     private StudyResult studyResult;
 
     public ScreenPointTracker() throws DEyesTrackerException {
+        openSampler();
         startStuding();
     }
 
@@ -34,6 +35,10 @@ public class ScreenPointTracker {
     }
 
     private void startStuding() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    private void openSampler() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

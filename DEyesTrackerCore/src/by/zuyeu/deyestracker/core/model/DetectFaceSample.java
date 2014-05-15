@@ -12,7 +12,7 @@ import org.opencv.core.Rect;
  *
  * @author Fieryphoenix
  */
-public class DetectFaceInfoModel {
+public class DetectFaceSample {
 
     private Point leftPupil;
     private Point rightPupil;
@@ -20,7 +20,7 @@ public class DetectFaceInfoModel {
     private Rect rightEye;
     private Rect face;
 
-    public DetectFaceInfoModel() {
+    public DetectFaceSample() {
     }
 
     public Point getLeftPupil() {
@@ -65,7 +65,7 @@ public class DetectFaceInfoModel {
 
     @Override
     public String toString() {
-        return "DetectFaceInfoModel{" + "leftPupil=" + leftPupil + ", rightPupil=" + rightPupil + ", leftEye=" + leftEye + ", rightEye=" + rightEye + ", face=" + face + '}';
+        return "DetectFaceSample{" + "leftPupil=" + leftPupil + ", rightPupil=" + rightPupil + ", leftEye=" + leftEye + ", rightEye=" + rightEye + ", face=" + face + '}';
     }
 
 }

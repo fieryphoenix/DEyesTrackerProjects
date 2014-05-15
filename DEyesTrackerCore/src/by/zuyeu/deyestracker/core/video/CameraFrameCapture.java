@@ -6,9 +6,12 @@
 package by.zuyeu.deyestracker.core.video;
 
 import by.zuyeu.deyestracker.core.exception.DEyesTrackerException;
+import by.zuyeu.deyestracker.core.exception.DEyesTrackerExceptionCode;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 import org.apache.commons.collections4.queue.CircularFifoQueue;
 import org.opencv.core.Mat;
 import org.opencv.highgui.VideoCapture;
@@ -30,6 +33,7 @@ public class CameraFrameCapture implements IFrameCapture {
 
     private final VideoCapture capture;
     private final CircularFifoQueue<Mat> frames;
+    private final ReadWriteLock lock = new ReentrantReadWriteLock();
 
     public CameraFrameCapture() {
         frames = new CircularFifoQueue<>(DEFAULT_FRAMES_COUNT);
@@ -39,25 +43,37 @@ public class CameraFrameCapture implements IFrameCapture {
 
     @Override
     public void start() throws DEyesTrackerException {
+        open();
+        if (capture.isOpened()) {
+            while (!isCanceled) {
+                final Mat webcam_image = new Mat();
+                capture.read(webcam_image);
+                if (!webcam_image.empty()) {
+                    lock.writeLock().lock();
+                    try {
+                        frames.add(webcam_image);
+                    } finally {
+                        lock.writeLock().unlock();
+                    }
+                }
+            }
+        } else {
+            throw new DEyesTrackerException(DEyesTrackerExceptionCode.OPEN_CAMERA_FAIL, "capture init failure");
+        }
+    }
+
+    @Override
+    public boolean open() throws DEyesTrackerException {
         if (!capture.isOpened()) {
             try {
                 capture.open(DEFAULT_DEVICE);
                 Thread.sleep(1000);
             } catch (InterruptedException ex) {
                 logger.error(ex.getMessage());
+                throw new DEyesTrackerException(DEyesTrackerExceptionCode.OPEN_CAMERA_FAIL, "capture init failure");
             }
         }
-        if (capture.isOpened()) {
-            while (!isCanceled) {
-                final Mat webcam_image = new Mat();
-                capture.read(webcam_image);
-                if (!webcam_image.empty()) {
-                    frames.add(webcam_image);
-                }
-            }
-        } else {
-            throw new DEyesTrackerException("capture init failure");
-        }
+        return capture.isOpened();
     }
 
     @Override
@@ -68,14 +84,33 @@ public class CameraFrameCapture implements IFrameCapture {
 
     @Override
     public Mat getNextFrame() {
-        return frames.poll();
+        Mat next = null;
+        lock.readLock().lock();
+        try {
+            next = frames.poll();
+        } finally {
+            lock.readLock().unlock();
+        }
+        return next;
+    }
+
+    @Override
+    public Mat getLatestFrame() {
+        Mat last = null;
+        lock.readLock().lock();
+        try {
+            last = frames.get(frames.size() - 1);
+        } finally {
+            lock.readLock().unlock();
+        }
+        return last;
     }
 
     @Override
     public void run() {
         try {
             start();
-        } catch (DEyesTrackerException ex) {
+        } catch (final DEyesTrackerException ex) {
             logger.error(ex.getMessage());
         }
     }

@@ -13,7 +13,7 @@ import org.opencv.core.Rect;
  *
  * @author Fieryphoenix
  */
-public class RightEyeProcessor implements IProcessor<Rect> {
+public class RightEyeProcessor implements IProcessor<Rect[], Rect[]> {
 
     @Override
     public Rect[] process(Rect[] input) {
@@ -31,5 +31,4 @@ public class RightEyeProcessor implements IProcessor<Rect> {
         });
         return new Rect[]{leftEye.get()};
     }
-
 }

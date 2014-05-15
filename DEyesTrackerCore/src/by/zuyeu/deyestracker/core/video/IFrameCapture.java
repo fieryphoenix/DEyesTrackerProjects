@@ -15,10 +15,14 @@ import org.opencv.core.Mat;
  */
 public interface IFrameCapture extends RunnableFuture<Void> {
 
-    public void start() throws DEyesTrackerException;
+    void start() throws DEyesTrackerException;
 
-    public void stop();
+    boolean open() throws DEyesTrackerException;
 
-    public Mat getNextFrame();
+    void stop();
+
+    Mat getNextFrame();
+
+    Mat getLatestFrame();
 
 }

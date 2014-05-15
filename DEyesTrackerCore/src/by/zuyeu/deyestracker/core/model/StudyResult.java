@@ -13,12 +13,12 @@ import java.util.Objects;
  */
 public class StudyResult {
 
-    public final DetectFaceInfoModel topLeft;
-    public final DetectFaceInfoModel bottomLeft;
-    public final DetectFaceInfoModel topRight;
-    public final DetectFaceInfoModel bottomRight;
+    public final DetectFaceSample topLeft;
+    public final DetectFaceSample bottomLeft;
+    public final DetectFaceSample topRight;
+    public final DetectFaceSample bottomRight;
 
-    public StudyResult(final DetectFaceInfoModel topLeft, final DetectFaceInfoModel bottomLeft, final DetectFaceInfoModel topRight, final DetectFaceInfoModel bottomRight) {
+    public StudyResult(final DetectFaceSample topLeft, final DetectFaceSample bottomLeft, final DetectFaceSample topRight, final DetectFaceSample bottomRight) {
         this.topLeft = topLeft;
         this.bottomLeft = bottomLeft;
         this.topRight = topRight;

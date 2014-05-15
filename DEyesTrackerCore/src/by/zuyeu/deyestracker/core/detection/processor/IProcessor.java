@@ -9,8 +9,9 @@ package by.zuyeu.deyestracker.core.detection.processor;
  *
  * @author Fieryphoenix
  * @param <T>
+ * @param <U>
  */
-public interface IProcessor<T> {
+public interface IProcessor<T, U> {
 
-    T[] process(T[] input);
+    U process(T input);
 }

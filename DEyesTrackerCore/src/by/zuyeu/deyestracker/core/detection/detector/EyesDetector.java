@@ -30,7 +30,7 @@ public class EyesDetector extends BaseDetector {
     private static final String OPEN_CV_RIGHT_EYE_CASCADE = "D:\\Soft\\Development\\OpenCV\\opencv-2.4.8\\sources\\data\\haarcascades\\haarcascade_righteye_2splits.xml";
 
     private EyesDetectType type;
-    private IProcessor<Rect> postProcessor;
+    private IProcessor<Rect[], Rect[]> postProcessor;
 
     protected EyesDetector(String cascadePath) throws DEyesTrackerException {
         super(cascadePath);

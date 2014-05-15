@@ -11,26 +11,25 @@ package by.zuyeu.deyestracker.core.trank;
  */
 import by.zuyeu.deyestracker.core.detection.detector.EyesDetector;
 import by.zuyeu.deyestracker.core.detection.detector.FaceDetector;
+import by.zuyeu.deyestracker.core.detection.task.DetectEyesTask;
+import by.zuyeu.deyestracker.core.detection.task.DetectFaceTask;
 import by.zuyeu.deyestracker.core.exception.DEyesTrackerException;
+import by.zuyeu.deyestracker.core.util.MatUtils;
+import by.zuyeu.deyestracker.core.util.TaskUtils;
 import by.zuyeu.deyestracker.core.video.CameraFrameCapture;
 import by.zuyeu.deyestracker.core.video.IFrameCapture;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
-import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.FutureTask;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import org.apache.commons.lang3.ArrayUtils;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
-import org.opencv.core.MatOfPoint;
 import org.opencv.core.Point;
 import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
@@ -101,45 +100,43 @@ public class DetectDemo {
         //-- 2. Read the video stream
         IFrameCapture capture = new CameraFrameCapture();
         new Thread(capture).start();
-        Rect[] faces = null;
+        Rect face = null;
         Rect[] eyes = null;
         final Scalar faceRegionColor = new Scalar(0, 255, 0);
         final Scalar eyesRegionColor = new Scalar(120, 120, 120);
 
         ExecutorService executorService = Executors.newSingleThreadExecutor();
-        FutureTask<Rect[]> detectFaceTask = null;
+        FutureTask<Rect> detectFaceTask = null;
         FutureTask<Rect[]> detectEyesTask = null;
-        Rect mainFace = null;
 
         while (true) {
             Mat webcam_image = capture.getNextFrame();
             if (webcam_image != null && !webcam_image.empty()) {
 
                 if (detectFaceTask == null) {
-                    detectFaceTask = createAndRunTask(new DetectFaceTask(faceDetector, webcam_image), executorService);
+                    detectFaceTask = TaskUtils.wrapFutureAnd(new DetectFaceTask(faceDetector, webcam_image), executorService);
                 }
                 if (detectFaceTask.isDone()) {
-                    faces = detectFaceTask.get();
-                    if (detectEyesTask == null && faces.length > 0) {
-                        mainFace = findMainFace(faces);
-                        final Mat faceImage = selectSubmatByRect(mainFace, webcam_image);
+                    face = detectFaceTask.get();
+                    if (detectEyesTask == null && face != null) {
+                        final Mat faceImage = MatUtils.selectSubmatByRect(face, webcam_image);
                         Mat faceImageForDetection = preProcessFaceRegion(faceImage);
-                        detectEyesTask = createAndRunTask(new DetectEyesTask(new EyesDetector[]{leftEyeDetector, rightEyeDetector}, faceImageForDetection), executorService
+                        detectEyesTask = TaskUtils.wrapFutureAnd(new DetectEyesTask(new EyesDetector[]{leftEyeDetector, rightEyeDetector}, faceImageForDetection), executorService
                         );
                     }
                     if (detectEyesTask != null && detectEyesTask.isDone()) {
                         eyes = detectEyesTask.get();
-                        fixRectFromSubimg(mainFace, eyes);
+                        fixRectFromSubimg(face, eyes);
                     }
-                    if (faces.length == 0 || detectEyesTask.isDone()) {
+                    if (face == null || detectEyesTask.isDone()) {
                         detectFaceTask = null;
                         detectEyesTask = null;
                     }
                 }
                 frame.setSize(webcam_image.width() + 40, webcam_image.height() + 60);
 
-                if (mainFace != null) {
-                    addRectangleToImage(mainFace, webcam_image, faceRegionColor);
+                if (face != null) {
+                    addRectangleToImage(face, webcam_image, faceRegionColor);
                 }
                 if (eyes != null && eyes.length > 0) {
 
@@ -163,10 +160,8 @@ public class DetectDemo {
     }
 
     private static void drawContours(Mat webcam_image, Rect[] eyes) {
-        List<MatOfPoint> contours = new ArrayList<>();
         for (Rect rect : eyes) {
-            Mat img = selectSubmatByRect(rect, webcam_image);
-            contours.clear();
+            Mat img = MatUtils.selectSubmatByRect(rect, webcam_image);
             img = drawPupils(img);
 
             insertSubmatByRect(img, rect, webcam_image);
@@ -186,40 +181,6 @@ public class DetectDemo {
 
     private static void addRectangleToImage(Rect face, Mat webcam_image, final Scalar color) {
         Core.rectangle(webcam_image, face.tl(), face.br(), color);
-    }
-
-    private static FutureTask<Rect[]> createAndRunTask(Callable<Rect[]> detectFutureTask, ExecutorService executorService) {
-        final FutureTask<Rect[]> futureTask = new FutureTask<>(detectFutureTask);
-        executorService.execute(futureTask);
-        return futureTask;
-    }
-
-    private static Mat selectSubmatByRect(Rect rect, Mat image) {
-        double colScale = 1.0 * image.cols() / image.width();
-        int colStart = (int) (1.0 * rect.x * colScale);
-        int colEnd = (int) (1.0 * (rect.x + rect.width) * colScale);
-        double rowScale = 1.0 * image.rows() / image.height();
-        int rowStart = (int) (1.0 * rect.y * rowScale);
-        int rowEnd = (int) (1.0 * (rect.y + rect.height) * rowScale);
-        logger.trace("region: colStart = {}, colEnd = {}, rowStart = {}, rowEnd = {}", colStart, colEnd, rowStart, rowEnd);
-        return image.submat(rowStart, rowEnd, colStart, colEnd);
-    }
-
-    private static Rect findMainFace(Rect[] faces) {
-        if (faces.length == 0) {
-            return null;
-        }
-        int mainFaceIndex = 0; // default if length = 0
-        double maxArea = 0;
-        for (int i = 0; (i < faces.length) && (faces.length > 1); i++) {
-            final Rect rect = faces[i];
-            final double area = rect.area();
-            if (area > maxArea) {
-                maxArea = area;
-                mainFaceIndex = i;
-            }
-        }
-        return faces[mainFaceIndex];
     }
 
     private static void insertSubmatByRect(Mat subImage, Rect rect, Mat origImage) {
@@ -249,67 +210,4 @@ public class DetectDemo {
         return img;
     }
     private static final Scalar RED = new Scalar(0, 0, 255);
-}
-
-class DetectFaceTask implements Callable<Rect[]> {
-
-    private static final Logger logger = LoggerFactory.getLogger(DetectFaceTask.class);
-
-    private final FaceDetector detector;
-    private final Mat frame;
-
-    public DetectFaceTask(FaceDetector detector, Mat frame) {
-        this.detector = detector;
-        this.frame = frame;
-    }
-
-    @Override
-    public Rect[] call() throws Exception {
-        long startTime = System.nanoTime();
-        Rect[] result = null;
-        if (frame != null && !frame.empty()) {
-            result = detector.detectFaces(frame);
-        }
-        if (result == null) {
-            result = new Rect[0];
-        }
-        long endTime = System.nanoTime();
-        logger.debug("faces detected = {}", result.length);
-        logger.debug("detection time: {} ms", (float) (endTime - startTime) / 1000000);
-        return result;
-    }
-}
-
-class DetectEyesTask implements Callable<Rect[]> {
-
-    private static final Logger logger = LoggerFactory.getLogger(DetectFaceTask.class);
-
-    private final EyesDetector[] detectors;
-    private final Mat frame;
-
-    public DetectEyesTask(EyesDetector detector, Mat frame) {
-        this.detectors = new EyesDetector[]{detector};
-        this.frame = frame;
-    }
-
-    public DetectEyesTask(EyesDetector[] detectors, Mat frame) {
-        this.detectors = detectors;
-        this.frame = frame;
-    }
-
-    @Override
-    public Rect[] call() throws Exception {
-        long startTime = System.nanoTime();
-        Rect[] result = new Rect[0];
-        if (frame != null && !frame.empty()) {
-            for (EyesDetector detector : detectors) {
-                Rect[] detectedEyes = detector.detectEyes(frame);
-                result = ArrayUtils.addAll(result, detectedEyes);
-            }
-        }
-        long endTime = System.nanoTime();
-        logger.debug("eyes detected = {}", result.length);
-        logger.debug("detection time: {} ms", (float) (endTime - startTime) / 1000000);
-        return result;
-    }
 }

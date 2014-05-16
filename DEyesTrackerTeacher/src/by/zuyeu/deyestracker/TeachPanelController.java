@@ -5,12 +5,18 @@
  */
 package by.zuyeu.deyestracker;
 
+import by.zuyeu.deyestracker.scenario.WelcomeScenario;
 import java.net.URL;
 import java.util.ResourceBundle;
-import javafx.event.ActionEvent;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import javafx.beans.property.Property;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
+import javafx.scene.shape.Circle;
 
 /**
  *
@@ -19,17 +25,39 @@ import javafx.scene.control.Label;
 public class TeachPanelController implements Initializable {
 
     @FXML
-    private Label label;
-
+    private Circle cTL;
     @FXML
-    private void handleButtonAction(ActionEvent event) {
-        System.out.println("You clicked me!");
-        label.setText("Hello World!");
-    }
+    private Circle cTR;
+    @FXML
+    private Circle cBL;
+    @FXML
+    private Circle cBR;
+    @FXML
+    private Label lText;
+
+    private Property<String> scenarioText;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // TODO
+        scenarioText = new SimpleStringProperty();
+        lText.textProperty().bind(scenarioText);
+        new ScenarioController().start();
     }
 
+    class ScenarioController extends Thread {
+
+        final ExecutorService executorService = Executors.newSingleThreadExecutor();
+
+        @Override
+        public void run() {
+            try {
+                final WelcomeScenario welcomeScenario = new WelcomeScenario(scenarioText);
+                executorService.execute(welcomeScenario);
+                welcomeScenario.get();
+            } catch (InterruptedException | ExecutionException e) {
+
+            }
+        }
+
+    }
 }

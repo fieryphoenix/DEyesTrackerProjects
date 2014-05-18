@@ -3,11 +3,11 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package by.zuyeu.deyestracker.core.sampler;
+package by.zuyeu.deyestracker.core.video.sampler;
 
 import by.zuyeu.deyestracker.core.exception.DEyesTrackerException;
-import by.zuyeu.deyestracker.core.model.DetectFaceSample;
-import by.zuyeu.deyestracker.core.video.IFrameCapture;
+import by.zuyeu.deyestracker.core.detection.model.DetectFaceSample;
+import by.zuyeu.deyestracker.core.video.capture.IFrameCapture;
 
 /**
  *

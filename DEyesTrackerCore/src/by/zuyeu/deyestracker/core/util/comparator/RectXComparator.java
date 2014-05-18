@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package by.zuyeu.deyestracker.core.comparator;
+package by.zuyeu.deyestracker.core.util.comparator;
 
 import java.util.Comparator;
 import org.opencv.core.Rect;

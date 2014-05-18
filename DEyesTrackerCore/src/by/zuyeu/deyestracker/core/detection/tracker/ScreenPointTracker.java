@@ -5,15 +5,16 @@
  */
 package by.zuyeu.deyestracker.core.detection.tracker;
 
-import by.zuyeu.deyestracker.core.event.CoreEvent;
+import by.zuyeu.deyestracker.core.eda.event.CoreEvent;
 import by.zuyeu.deyestracker.core.exception.DEyesTrackerException;
 import by.zuyeu.deyestracker.core.exception.DEyesTrackerExceptionCode;
-import by.zuyeu.deyestracker.core.model.DetectFaceSample;
-import by.zuyeu.deyestracker.core.model.StudyResult;
-import by.zuyeu.deyestracker.core.router.EventRouter;
-import by.zuyeu.deyestracker.core.router.IRouter;
-import by.zuyeu.deyestracker.core.sampler.FaceInfoSampler;
-import by.zuyeu.deyestracker.core.sampler.ISampler;
+import by.zuyeu.deyestracker.core.detection.learning.TeacherWithUser;
+import by.zuyeu.deyestracker.core.detection.model.DetectFaceSample;
+import by.zuyeu.deyestracker.core.detection.model.StudyResult;
+import by.zuyeu.deyestracker.core.eda.router.EventRouter;
+import by.zuyeu.deyestracker.core.eda.router.IRouter;
+import by.zuyeu.deyestracker.core.video.sampler.FaceInfoSampler;
+import by.zuyeu.deyestracker.core.video.sampler.ISampler;
 import by.zuyeu.deyestracker.core.util.ExceptionToEventConverter;
 import org.apache.commons.collections4.queue.CircularFifoQueue;
 import org.slf4j.Logger;
@@ -25,7 +26,7 @@ import org.slf4j.LoggerFactory;
  */
 public class ScreenPointTracker {
 
-    static class ScreenPointTrackerBuilder {
+    public static class ScreenPointTrackerBuilder {
 
         private ISampler sampler;
         private IRouter router;
@@ -89,15 +90,27 @@ public class ScreenPointTracker {
 
     public void start() throws DEyesTrackerException {
         //TODO
+        LOG.warn("TEST START - OK");
+    }
+
+    public void stop() throws DEyesTrackerException {
+        //TODO
+        LOG.warn("TEST STOP - OK");
+        sampler.close();
     }
 
     public IRouter getRouter() {
         return this.router;
     }
 
-    private void startStuding() {
+    private void startStuding() throws DEyesTrackerException {
         LOG.trace("startStuding - start;");
-        //TODO: realize
+        TeacherWithUser teacher = new TeacherWithUser(router, sampler);
+        try {
+            this.studyResult = teacher.call();
+        } catch (Exception ex) {
+            throw new DEyesTrackerException(DEyesTrackerExceptionCode.STUDY_FAILURE, ex);
+        }
         LOG.trace("startStuding - end;");
     }
 
@@ -142,5 +155,13 @@ public class ScreenPointTracker {
 
     private void setStudyResult(StudyResult studyResult) {
         this.studyResult = studyResult;
+    }
+
+    public ISampler getSampler() {
+        return sampler;
+    }
+
+    public StudyResult getStudyResult() {
+        return studyResult;
     }
 }

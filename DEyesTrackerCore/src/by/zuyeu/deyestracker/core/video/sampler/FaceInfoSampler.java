@@ -3,20 +3,20 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package by.zuyeu.deyestracker.core.sampler;
+package by.zuyeu.deyestracker.core.video.sampler;
 
-import by.zuyeu.deyestracker.core.comparator.RectXComparator;
+import by.zuyeu.deyestracker.core.util.comparator.RectXComparator;
 import by.zuyeu.deyestracker.core.detection.detector.EyesDetector;
 import by.zuyeu.deyestracker.core.detection.detector.FaceDetector;
 import by.zuyeu.deyestracker.core.detection.task.DetectEyesTask;
 import by.zuyeu.deyestracker.core.detection.task.DetectFaceTask;
 import by.zuyeu.deyestracker.core.detection.task.DetectPupilsTask;
 import by.zuyeu.deyestracker.core.exception.DEyesTrackerException;
-import by.zuyeu.deyestracker.core.model.DetectFaceSample;
+import by.zuyeu.deyestracker.core.detection.model.DetectFaceSample;
 import by.zuyeu.deyestracker.core.util.CVCoreUtils;
 import by.zuyeu.deyestracker.core.util.TaskUtils;
-import by.zuyeu.deyestracker.core.video.CameraFrameCapture;
-import by.zuyeu.deyestracker.core.video.IFrameCapture;
+import by.zuyeu.deyestracker.core.video.capture.CameraFrameCapture;
+import by.zuyeu.deyestracker.core.video.capture.IFrameCapture;
 import java.util.Arrays;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -184,7 +184,7 @@ public class FaceInfoSampler implements ISampler {
             CVCoreUtils.fixRectTLFromSubmat(eyes, mainFace);
         }
 
-        LOG.trace("getPupilsPoints - end: eyes = {}", eyes);
+        LOG.trace("getPupilsPoints - end: eyes = {}", (Object) eyes);
         return eyes;
     }
 

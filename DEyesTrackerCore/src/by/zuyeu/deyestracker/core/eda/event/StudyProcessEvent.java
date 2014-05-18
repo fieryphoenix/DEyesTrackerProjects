@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package by.zuyeu.deyestracker.core.event;
+package by.zuyeu.deyestracker.core.eda.event;
 
 import java.util.Objects;
 
@@ -11,21 +11,17 @@ import java.util.Objects;
  *
  * @author Fieryphoenix
  */
-public class CoreEvent implements DEyeTrackEvent {
+public class StudyProcessEvent implements DEyeTrackEvent {
 
-    public static enum EventType {
+    public static enum Region {
 
-        START_DETECTION, HOLD_DETECTION, INIT_FAILURE, NO_CAMERA, BAD_IMAGE, STUDY_ABSENCE;
+        TOP_LEFT, TOP_RIGHT, BOTTOM_LEFT, BOTTOM_RIGHT, NONE;
     }
 
-    private final EventType action;
+    private final Region region;
 
-    public CoreEvent(EventType action) {
-        this.action = action;
-    }
-
-    public EventType getAction() {
-        return action;
+    public StudyProcessEvent(StudyProcessEvent.Region region) {
+        this.region = region;
     }
 
     @Override
@@ -33,10 +29,14 @@ public class CoreEvent implements DEyeTrackEvent {
         return getClass();
     }
 
+    public Region getRegion() {
+        return region;
+    }
+
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 17 * hash + Objects.hashCode(this.action);
+        hash = 97 * hash + Objects.hashCode(this.region);
         return hash;
     }
 
@@ -48,8 +48,8 @@ public class CoreEvent implements DEyeTrackEvent {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final CoreEvent other = (CoreEvent) obj;
-        if (this.action != other.action) {
+        final StudyProcessEvent other = (StudyProcessEvent) obj;
+        if (this.region != other.region) {
             return false;
         }
         return true;
@@ -57,6 +57,7 @@ public class CoreEvent implements DEyeTrackEvent {
 
     @Override
     public String toString() {
-        return "CoreEvent{" + "action=" + action + '}';
+        return "StudyProcessEvent{" + "region=" + region + '}';
     }
+
 }

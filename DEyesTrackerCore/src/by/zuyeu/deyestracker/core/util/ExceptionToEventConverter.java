@@ -5,7 +5,7 @@
  */
 package by.zuyeu.deyestracker.core.util;
 
-import by.zuyeu.deyestracker.core.event.CoreEvent;
+import by.zuyeu.deyestracker.core.eda.event.CoreEvent;
 import by.zuyeu.deyestracker.core.exception.DEyesTrackerExceptionCode;
 import java.util.HashMap;
 import java.util.Map;

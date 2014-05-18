@@ -3,10 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package by.zuyeu.deyestracker.core.router;
+package by.zuyeu.deyestracker.core.eda.router;
 
-import by.zuyeu.deyestracker.core.event.DEyeTrackEvent;
-import by.zuyeu.deyestracker.core.event.handler.DEyesTrackerHandler;
+import by.zuyeu.deyestracker.core.eda.event.DEyeTrackEvent;
+import by.zuyeu.deyestracker.core.eda.event.handler.DEyesTrackerHandler;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -59,7 +59,7 @@ public class EventRouter implements IRouter {
 
         if (handlers.containsKey(event.getType())) {
             final List<DEyesTrackerHandler> classHandlers = handlers.get(event.getType());
-            classHandlers.stream().parallel().forEach(c -> {
+            classHandlers.stream().forEach(c -> {
                 c.handle(event);
             });
         }

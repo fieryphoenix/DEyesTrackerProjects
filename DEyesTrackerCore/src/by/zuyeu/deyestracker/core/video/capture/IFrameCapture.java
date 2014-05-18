@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package by.zuyeu.deyestracker.core.video;
+package by.zuyeu.deyestracker.core.video.capture;
 
 import by.zuyeu.deyestracker.core.exception.DEyesTrackerException;
 import java.util.concurrent.RunnableFuture;

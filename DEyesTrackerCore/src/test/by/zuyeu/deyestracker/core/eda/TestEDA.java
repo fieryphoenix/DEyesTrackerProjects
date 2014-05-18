@@ -3,12 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package by.zuyeu.deyestracker.core.trank;
+package test.by.zuyeu.deyestracker.core.eda;
 
-import by.zuyeu.deyestracker.core.event.CoreEvent;
-import by.zuyeu.deyestracker.core.event.DEyeTrackEvent;
-import by.zuyeu.deyestracker.core.event.handler.DEyesTrackerHandler;
-import by.zuyeu.deyestracker.core.router.EventRouter;
+import by.zuyeu.deyestracker.core.eda.event.CoreEvent;
+import by.zuyeu.deyestracker.core.eda.event.DEyeTrackEvent;
+import by.zuyeu.deyestracker.core.eda.event.handler.DEyesTrackerHandler;
+import by.zuyeu.deyestracker.core.eda.router.EventRouter;
 
 /**
  *

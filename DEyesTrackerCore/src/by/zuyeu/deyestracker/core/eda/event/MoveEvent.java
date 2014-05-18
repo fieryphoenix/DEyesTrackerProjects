@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package by.zuyeu.deyestracker.core.event;
+package by.zuyeu.deyestracker.core.eda.event;
 
 import java.util.Objects;
 import org.opencv.core.Point;

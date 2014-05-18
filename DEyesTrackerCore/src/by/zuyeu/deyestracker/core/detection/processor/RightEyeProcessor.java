@@ -5,7 +5,7 @@
  */
 package by.zuyeu.deyestracker.core.detection.processor;
 
-import by.zuyeu.deyestracker.core.comparator.RectXComparator;
+import by.zuyeu.deyestracker.core.util.comparator.RectXComparator;
 import java.util.Arrays;
 import java.util.Optional;
 import org.opencv.core.Rect;

@@ -24,7 +24,7 @@ public class WelcomeScenario extends Task<Void> {
     @Override
     protected Void call() throws Exception {
         System.out.println("run welcome scenario - start;");
-        Thread.sleep(3000);
+        Thread.sleep(6000);
         Platform.runLater(() -> {
             scenarioText.setValue("Привет! Это программа обучения системы слежения за взглядом.");
         });

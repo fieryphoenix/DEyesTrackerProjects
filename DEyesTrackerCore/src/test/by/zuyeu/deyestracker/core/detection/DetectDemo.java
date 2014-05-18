@@ -3,17 +3,17 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package by.zuyeu.deyestracker.core.trank;
+package test.by.zuyeu.deyestracker.core.detection;
 
 /*
  * Captures the camera stream with OpenCV
  * Search for the faces and eyes
  */
 import by.zuyeu.deyestracker.core.exception.DEyesTrackerException;
-import by.zuyeu.deyestracker.core.model.DetectFaceSample;
-import by.zuyeu.deyestracker.core.sampler.FaceInfoSampler;
+import by.zuyeu.deyestracker.core.detection.model.DetectFaceSample;
+import by.zuyeu.deyestracker.core.video.sampler.FaceInfoSampler;
 import by.zuyeu.deyestracker.core.util.TaskUtils;
-import by.zuyeu.deyestracker.core.video.IFrameCapture;
+import by.zuyeu.deyestracker.core.video.capture.IFrameCapture;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;

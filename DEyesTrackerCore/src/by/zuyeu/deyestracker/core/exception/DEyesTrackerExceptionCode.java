@@ -11,5 +11,5 @@ package by.zuyeu.deyestracker.core.exception;
  */
 public enum DEyesTrackerExceptionCode {
 
-    CORE_INIT_FAILURE, NO_CAMERA, OPEN_CAMERA_FAIL, STUDY_FAILURE;
+    UNKNOWN, CORE_INIT_FAILURE, NO_CAMERA, OPEN_CAMERA_FAIL, STUDY_FAILURE;
 }

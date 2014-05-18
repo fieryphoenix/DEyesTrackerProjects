@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package test.by.zuyeu.deyestracker.core.trank;
+package by.zuyeu.deyestracker.core.trank;
 
 import java.util.Arrays;
 import org.opencv.core.Point;
@@ -14,6 +14,9 @@ import org.opencv.core.Rect;
  * @author Fieryphoenix
  */
 public class Java8Test {
+
+    public Java8Test() {
+    }
 
     public static void main(String[] args) {
         Rect[] t = new Rect[10];
@@ -29,8 +32,7 @@ public class Java8Test {
     }
 
     private static void printArray(Rect[] t) {
-        Arrays.stream(t).forEach(p -> {
-            System.out.println(" elem = " + p);
-        });
+        Arrays.stream(t).forEach(p
+                -> System.out.println(" elem = " + p));
     }
 }

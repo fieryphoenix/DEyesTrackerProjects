@@ -8,8 +8,9 @@ package by.zuyeu.deyestracker.core.eda.event;
 /**
  *
  * @author Fieryphoenix
+ * @param <T>
  */
-public interface DEyeTrackEvent {
+public interface DEyeTrackEvent<T extends DEyeTrackEvent> {
 
-    public Class<? extends DEyeTrackEvent> getType();
+    public Class<T> getType();
 }

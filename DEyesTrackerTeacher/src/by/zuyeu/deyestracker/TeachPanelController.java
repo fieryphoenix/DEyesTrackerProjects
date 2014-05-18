@@ -21,12 +21,16 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
  * @author Fieryphoenix
  */
 public class TeachPanelController implements Initializable {
+
+    private static final Logger LOG = LoggerFactory.getLogger(TeachPanelController.class);
 
     @FXML
     private Circle cTL;
@@ -57,16 +61,15 @@ public class TeachPanelController implements Initializable {
             try {
                 runWelcomeScenario();
                 final StudyResult tResult = runTeachingScenario();
-                Platform.runLater(() -> {
-                    scenarioText.setValue("Готово! Спасибо!");
-                });
-                System.out.println("RESULT HERE = " + tResult);
-                Platform.runLater(() -> {
-                    ((Stage) lText.getScene().getWindow()).close();
-                });
+                Platform.runLater(()
+                        -> scenarioText.setValue("Готово! Спасибо!")
+                );
+                LOG.debug("RESULT HERE = " + tResult);
+                Platform.runLater(()
+                        -> ((Stage) lText.getScene().getWindow()).close());
 
             } catch (InterruptedException | ExecutionException e) {
-
+                LOG.error("Teach run", e);
             }
         }
 
@@ -77,11 +80,11 @@ public class TeachPanelController implements Initializable {
         }
 
         private StudyResult runTeachingScenario() throws InterruptedException, ExecutionException {
-            System.out.println("runTeachingScenario - start;");
+            LOG.trace("runTeachingScenario - start;");
             final TeachingScenario scenario = new TeachingScenario(cTL.visibleProperty(), cTR.visibleProperty(), cBL.visibleProperty(), cBR.visibleProperty());
             executorService.execute(scenario);
             final StudyResult result = scenario.get();
-            System.out.println("runTeachingScenario - end: result = " + result);
+            LOG.trace("runTeachingScenario - end: result = " + result);
             return result;
         }
 

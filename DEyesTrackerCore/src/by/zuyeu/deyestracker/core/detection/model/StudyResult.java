@@ -13,10 +13,10 @@ import java.util.Objects;
  */
 public class StudyResult {
 
-    public final DetectFaceSample topLeft;
-    public final DetectFaceSample bottomLeft;
-    public final DetectFaceSample topRight;
-    public final DetectFaceSample bottomRight;
+    private final DetectFaceSample topLeft;
+    private final DetectFaceSample bottomLeft;
+    private final DetectFaceSample topRight;
+    private final DetectFaceSample bottomRight;
 
     public StudyResult(final DetectFaceSample topLeft, final DetectFaceSample bottomLeft, final DetectFaceSample topRight, final DetectFaceSample bottomRight) {
         this.topLeft = topLeft;
@@ -25,13 +25,41 @@ public class StudyResult {
         this.bottomRight = bottomRight;
     }
 
+    /**
+     * @return the topLeft
+     */
+    public DetectFaceSample getTopLeft() {
+        return topLeft;
+    }
+
+    /**
+     * @return the bottomLeft
+     */
+    public DetectFaceSample getBottomLeft() {
+        return bottomLeft;
+    }
+
+    /**
+     * @return the topRight
+     */
+    public DetectFaceSample getTopRight() {
+        return topRight;
+    }
+
+    /**
+     * @return the bottomRight
+     */
+    public DetectFaceSample getBottomRight() {
+        return bottomRight;
+    }
+
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 83 * hash + Objects.hashCode(this.topLeft);
-        hash = 83 * hash + Objects.hashCode(this.bottomLeft);
-        hash = 83 * hash + Objects.hashCode(this.topRight);
-        hash = 83 * hash + Objects.hashCode(this.bottomRight);
+        hash = 83 * hash + Objects.hashCode(this.getTopLeft());
+        hash = 83 * hash + Objects.hashCode(this.getBottomLeft());
+        hash = 83 * hash + Objects.hashCode(this.getTopRight());
+        hash = 83 * hash + Objects.hashCode(this.getBottomRight());
         return hash;
     }
 
@@ -61,7 +89,7 @@ public class StudyResult {
 
     @Override
     public String toString() {
-        return "StudyResult{" + "topLeft=" + topLeft + ", bottomLeft=" + bottomLeft + ", topRight=" + topRight + ", bottomRight=" + bottomRight + '}';
+        return "StudyResult{" + "topLeft=" + getTopLeft() + ", bottomLeft=" + getBottomLeft() + ", topRight=" + getTopRight() + ", bottomRight=" + getBottomRight() + '}';
     }
 
 }

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.*?>
 <?import java.lang.*?>
 <?import java.net.*?>
 <?import java.util.*?>
@@ -8,14 +9,27 @@
 <?import javafx.scene.layout.*?>
 <?scenebuilder-preview-i18n-resource bundle/messages.properties?>
 
-<AnchorPane id="AnchorPane" prefHeight="200.0" prefWidth="320.0" styleClass="background" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="by.zuyeu.deyestracker.ui.LoginPageController">
+<AnchorPane id="AnchorPane" prefHeight="202.0" prefWidth="302.0" styleClass="background" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="by.zuyeu.deyestracker.ui.LoginPageController">
   <children>
-    <Button fx:id="button" layoutX="191.0" layoutY="137.0" minHeight="25.0" onAction="#handleButtonAction" prefHeight="45.0" text="Click Me!" />
-    <Label fx:id="label" layoutX="126.0" layoutY="120.0" minHeight="16.0" minWidth="69.0" />
-    <PasswordField layoutX="14.0" layoutY="52.0" prefWidth="200.0" promptText="%page.login.labels.password" />
-    <TextField layoutX="14.0" layoutY="9.0" prefWidth="200.0" promptText="%page.login.labels.name" text="" />
+      <VBox alignment="TOP_RIGHT" layoutX="8.0" layoutY="9.0" prefHeight="184.0" prefWidth="292.0" spacing="5.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="10.0">
+         <children>
+          <TextField layoutX="14.0" layoutY="9.0" prefWidth="200.0" promptText="%page.login.labels.name" text="" />
+          <PasswordField layoutX="14.0" layoutY="52.0" prefWidth="200.0" promptText="%page.login.labels.password" />
+          <Button fx:id="button" defaultButton="true" layoutX="105.0" layoutY="98.0" minHeight="25.0" onAction="#handleButtonAction" prefHeight="43.0" prefWidth="160.0" text="%page.login.button.login" wrapText="true" />
+            <Separator prefHeight="21.0" prefWidth="310.0" />
+            <VBox alignment="BOTTOM_RIGHT" prefHeight="27.0" prefWidth="292.0">
+               <children>
+                  <Button mnemonicParsing="false" prefHeight="24.0" prefWidth="159.0" styleClass="signup-button" text="%page.login.buttons.skip" wrapText="true" />
+               </children>
+               <VBox.margin>
+                  <Insets bottom="15.0" />
+               </VBox.margin>
+            </VBox>
+         </children>
+      </VBox>
   </children>
   <stylesheets>
     <URL value="@css/Common.css" />
+      <URL value="@css/Common.css" />
   </stylesheets>
 </AnchorPane>

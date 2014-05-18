@@ -5,19 +5,20 @@
  */
 package by.zuyeu.deyestracker.scenario;
 
+import by.zuyeu.deyestracker.core.detection.model.StudyResult;
 import by.zuyeu.deyestracker.core.detection.tracker.ScreenPointTracker;
 import by.zuyeu.deyestracker.core.eda.event.StudyProcessEvent;
 import by.zuyeu.deyestracker.core.eda.event.handler.DEyesTrackerHandler;
-import by.zuyeu.deyestracker.core.exception.DEyesTrackerException;
-import by.zuyeu.deyestracker.core.detection.model.StudyResult;
 import by.zuyeu.deyestracker.core.eda.router.EventRouter;
 import by.zuyeu.deyestracker.core.eda.router.IRouter;
+import by.zuyeu.deyestracker.core.exception.DEyesTrackerException;
 import by.zuyeu.deyestracker.core.video.sampler.FaceInfoSampler;
 import by.zuyeu.deyestracker.core.video.sampler.ISampler;
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.SimpleBooleanProperty;
 import javafx.concurrent.Task;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -25,21 +26,12 @@ import javafx.concurrent.Task;
  */
 public class TeachingScenario extends Task<StudyResult> {
 
+    private static final Logger LOG = LoggerFactory.getLogger(TeachingScenario.class);
+
     private final BooleanProperty tl;
     private final BooleanProperty tr;
     private final BooleanProperty bl;
     private final BooleanProperty br;
-
-    public static void main(String[] args) {
-        BooleanProperty bp = new SimpleBooleanProperty();
-        TeachingScenario scenario = new TeachingScenario(bp, bp, bp, bp);
-        try {
-            scenario.call();
-        } catch (DEyesTrackerException ex) {
-            System.out.println("ex = " + ex.getMessage());
-            ex.printStackTrace();
-        }
-    }
 
     public TeachingScenario(BooleanProperty tl, BooleanProperty tr, BooleanProperty bl, BooleanProperty br) {
         this.tl = tl;
@@ -50,11 +42,11 @@ public class TeachingScenario extends Task<StudyResult> {
 
     @Override
     protected StudyResult call() throws DEyesTrackerException {
-        System.out.println("call - start;");
+        LOG.info("call - start;");
         final IRouter router = new EventRouter();
         router.registerHandler(StudyProcessEvent.class, (DEyesTrackerHandler<StudyProcessEvent>) (StudyProcessEvent event) -> {
             Platform.runLater(new PointerSwitcher(event.getRegion()));
-            System.out.println("e = " + event);
+            LOG.trace("e = " + event);
         });
         StudyResult result = null;
         try {
@@ -64,10 +56,10 @@ public class TeachingScenario extends Task<StudyResult> {
             result = tracker.getStudyResult();
             tracker.stop();
         } catch (DEyesTrackerException e) {
-            System.out.println(e.getCode() + e.getMessage());
+            LOG.warn("init core elements failure: code = {}, message = {}", e.getCode(), e.getMessage());
             throw e;
         }
-        System.out.println("call - ends: result = " + result);
+        LOG.info("call - ends: result = " + result);
         return result;
     }
 
@@ -98,6 +90,8 @@ public class TeachingScenario extends Task<StudyResult> {
                 case TOP_RIGHT:
                     tr.set(true);
                     break;
+                default:
+                    throw new IllegalStateException();
             }
             return null;
         }

@@ -21,7 +21,9 @@ import org.slf4j.LoggerFactory;
 public class DetectPupilsTask implements Callable<Point> {
 
     private static final Logger LOG = LoggerFactory.getLogger(DetectPupilsTask.class);
+    private static final int GAUS_BLUR_DELTA = 2;
 
+    private static final Size STRUCT_ELEMENT_SIZE = new Size(15, 15);
     private final Mat frame;
 
     public DetectPupilsTask(final Mat frame) {
@@ -34,10 +36,10 @@ public class DetectPupilsTask implements Callable<Point> {
 
         final Mat imageHSV = new Mat(frame.size(), Core.DEPTH_MASK_8U);
         Imgproc.cvtColor(frame, imageHSV, Imgproc.COLOR_BGR2GRAY);
-        final Size StructureElemSize = new Size(15, 15);
-        Imgproc.erode(imageHSV, imageHSV, Imgproc.getStructuringElement(Imgproc.MORPH_RECT, StructureElemSize));
-        Imgproc.dilate(imageHSV, imageHSV, Imgproc.getStructuringElement(Imgproc.MORPH_RECT, StructureElemSize));
-        Imgproc.GaussianBlur(imageHSV, imageHSV, StructureElemSize, 2);
+
+        Imgproc.erode(imageHSV, imageHSV, Imgproc.getStructuringElement(Imgproc.MORPH_RECT, STRUCT_ELEMENT_SIZE));
+        Imgproc.dilate(imageHSV, imageHSV, Imgproc.getStructuringElement(Imgproc.MORPH_RECT, STRUCT_ELEMENT_SIZE));
+        Imgproc.GaussianBlur(imageHSV, imageHSV, STRUCT_ELEMENT_SIZE, GAUS_BLUR_DELTA);
 
         Core.MinMaxLocResult mmG = Core.minMaxLoc(imageHSV);
 

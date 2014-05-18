@@ -59,9 +59,9 @@ public class EventRouter implements IRouter {
 
         if (handlers.containsKey(event.getType())) {
             final List<DEyesTrackerHandler> classHandlers = handlers.get(event.getType());
-            classHandlers.stream().forEach(c -> {
-                c.handle(event);
-            });
+            classHandlers.stream().forEach(c
+                    -> c.handle(event)
+            );
         }
 
         LOG.info("sendEvent() - end;");

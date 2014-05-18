@@ -10,7 +10,8 @@ import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Label;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -18,13 +19,11 @@ import javafx.scene.control.Label;
  */
 public class LoginPageController implements Initializable {
 
-    @FXML
-    private Label label;
+    private static final Logger LOG = LoggerFactory.getLogger(LoginPageController.class);
 
     @FXML
     private void handleButtonAction(ActionEvent event) {
-        System.out.println("You clicked me!");
-        label.setText("Hello World!");
+        LOG.debug("You clicked me!");
     }
 
     @Override

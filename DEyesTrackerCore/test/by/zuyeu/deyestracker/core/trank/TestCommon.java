@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package test.by.zuyeu.deyestracker.core.trank;
+package by.zuyeu.deyestracker.core.trank;
 
 import org.apache.commons.collections4.queue.CircularFifoQueue;
 
@@ -12,6 +12,9 @@ import org.apache.commons.collections4.queue.CircularFifoQueue;
  * @author Fieryphoenix
  */
 public class TestCommon {
+
+    public TestCommon() {
+    }
 
     public static void main(String[] args) {
         CircularFifoQueue<Integer> numbers = new CircularFifoQueue<>(3);

@@ -12,7 +12,7 @@ import org.opencv.core.Point;
  *
  * @author Fieryphoenix
  */
-public class MoveEvent implements DEyeTrackEvent {
+public class MoveEvent implements DEyeTrackEvent<MoveEvent> {
 
     private final Point oldPosition;
     private final Point newPosition;
@@ -31,8 +31,8 @@ public class MoveEvent implements DEyeTrackEvent {
     }
 
     @Override
-    public Class<? extends DEyeTrackEvent> getType() {
-        return getClass();
+    public Class<MoveEvent> getType() {
+        return (Class<MoveEvent>) getClass();
     }
 
     @Override

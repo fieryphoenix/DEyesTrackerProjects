@@ -11,7 +11,7 @@ import java.util.Objects;
  *
  * @author Fieryphoenix
  */
-public class CoreEvent implements DEyeTrackEvent {
+public class CoreEvent implements DEyeTrackEvent<CoreEvent> {
 
     public static enum EventType {
 
@@ -29,8 +29,8 @@ public class CoreEvent implements DEyeTrackEvent {
     }
 
     @Override
-    public Class<? extends DEyeTrackEvent> getType() {
-        return getClass();
+    public Class<CoreEvent> getType() {
+        return (Class<CoreEvent>) getClass();
     }
 
     @Override

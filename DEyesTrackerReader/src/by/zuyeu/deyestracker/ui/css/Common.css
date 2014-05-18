@@ -123,3 +123,11 @@
 .error-field{
     -fx-background-color: red,linear-gradient(to bottom, derive(red,60%) 5%,derive(red,90%) 40%);
 }
+
+.signup-button {
+    -fx-font-family: "Arial";
+    -fx-text-fill: activeborder;
+    -fx-font-size: 12;
+    -fx-text-fill: linear-gradient(white, aliceblue);
+    -fx-padding: 2 4 2 4;
+}

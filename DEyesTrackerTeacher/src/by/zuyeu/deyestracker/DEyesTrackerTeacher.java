@@ -10,7 +10,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 
 /**
@@ -24,7 +23,7 @@ public class DEyesTrackerTeacher extends Application {
         Parent root = FXMLLoader.load(getClass().getResource("TeachPanel.fxml"));
 
         final Scene scene = new Scene(root);
-        scene.setOnKeyPressed((KeyEvent t) -> {
+        scene.setOnKeyPressed(t -> {
             if (t.getCode() == KeyCode.ESCAPE) {
                 Stage sb = (Stage) scene.getWindow();
                 sb.close();

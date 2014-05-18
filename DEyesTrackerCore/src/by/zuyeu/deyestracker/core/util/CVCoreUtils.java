@@ -16,6 +16,10 @@ import org.opencv.core.Rect;
  */
 public class CVCoreUtils {
 
+    private CVCoreUtils() {
+        throw new IllegalAccessError("unconstructable class");
+    }
+
     public static Mat selectSubmatByRect(Rect rect, Mat image) {
         double colScale = 1.0 * image.cols() / image.width();
         int colStart = (int) (1.0 * rect.x * colScale);

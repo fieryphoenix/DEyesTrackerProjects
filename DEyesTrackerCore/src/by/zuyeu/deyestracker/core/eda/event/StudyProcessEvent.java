@@ -11,7 +11,7 @@ import java.util.Objects;
  *
  * @author Fieryphoenix
  */
-public class StudyProcessEvent implements DEyeTrackEvent {
+public class StudyProcessEvent implements DEyeTrackEvent<StudyProcessEvent> {
 
     public static enum Region {
 
@@ -25,8 +25,8 @@ public class StudyProcessEvent implements DEyeTrackEvent {
     }
 
     @Override
-    public Class<? extends DEyeTrackEvent> getType() {
-        return getClass();
+    public Class<StudyProcessEvent> getType() {
+        return (Class<StudyProcessEvent>) getClass();
     }
 
     public Region getRegion() {

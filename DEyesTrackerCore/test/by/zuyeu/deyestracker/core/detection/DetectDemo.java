@@ -3,17 +3,17 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package test.by.zuyeu.deyestracker.core.detection;
+package by.zuyeu.deyestracker.core.detection;
 
 /*
  * Captures the camera stream with OpenCV
  * Search for the faces and eyes
  */
-import by.zuyeu.deyestracker.core.exception.DEyesTrackerException;
 import by.zuyeu.deyestracker.core.detection.model.DetectFaceSample;
-import by.zuyeu.deyestracker.core.video.sampler.FaceInfoSampler;
+import by.zuyeu.deyestracker.core.exception.DEyesTrackerException;
 import by.zuyeu.deyestracker.core.util.TaskUtils;
 import by.zuyeu.deyestracker.core.video.capture.IFrameCapture;
+import by.zuyeu.deyestracker.core.video.sampler.FaceInfoSampler;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
@@ -44,7 +44,7 @@ class DemoPanel extends JPanel {
      * @param matrix Mat of type CV_8UC3 or CV_8UC1
      * @return BufferedImage of type TYPE_3BYTE_BGR or TYPE_BYTE_GRAY
      */
-    public boolean MatToBufferedImage(Mat matBGR) {
+    public boolean convertMatToBufferedImage(Mat matBGR) {
 
         int width = matBGR.width(), height = matBGR.height(), channels = matBGR.channels();
         byte[] sourcePixels = new byte[width * height * channels];
@@ -70,8 +70,11 @@ public class DetectDemo {
 
     private static final Logger LOG = LoggerFactory.getLogger(DetectDemo.class);
 
-    public static void main(String arg[]) throws DEyesTrackerException, InterruptedException, ExecutionException {
+    public DetectDemo() {
+    }
 
+    public static void main(String arg[]) throws DEyesTrackerException, InterruptedException, ExecutionException {
+        LOG.info("main - start;");
         final String windowName = "Capture - Face detection";
         final JFrame frame = new JFrame(windowName);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -90,9 +93,9 @@ public class DetectDemo {
         FutureTask<DetectFaceSample> detectFaceTask = TaskUtils.wrapFutureAnd(new DetectTask(sampler), executorService);
         DetectFaceSample sample = new DetectFaceSample();
         while (true) {
-            final Mat webcam_image = capture.getNextFrame();
-            if (webcam_image != null && !webcam_image.empty()) {
-                frame.setSize(webcam_image.width() + 40, webcam_image.height() + 60);
+            final Mat webcamImage = capture.getNextFrame();
+            if (webcamImage != null && !webcamImage.empty()) {
+                frame.setSize(webcamImage.width() + 40, webcamImage.height() + 60);
 
                 if (detectFaceTask.isDone()) {
                     sample = detectFaceTask.get();
@@ -101,30 +104,30 @@ public class DetectDemo {
                 }
 
                 if (sample.getFace() != null) {
-                    addRectangleToImage(sample.getFace(), webcam_image, faceRegionColor);
+                    addRectangleToImage(sample.getFace(), webcamImage, faceRegionColor);
                 }
                 if (sample.getLeftEye() != null) {
-                    addRectangleToImage(sample.getLeftEye(), webcam_image, eyesRegionColor);
+                    addRectangleToImage(sample.getLeftEye(), webcamImage, eyesRegionColor);
                 }
                 if (sample.getRightEye() != null) {
-                    addRectangleToImage(sample.getRightEye(), webcam_image, eyesRegionColor);
+                    addRectangleToImage(sample.getRightEye(), webcamImage, eyesRegionColor);
                 }
                 if (sample.getLeftPupil() != null) {
-                    drawCircle(webcam_image, sample.getLeftPupil());
+                    drawCircle(webcamImage, sample.getLeftPupil());
                 }
                 if (sample.getRightPupil() != null) {
-                    drawCircle(webcam_image, sample.getRightPupil());
+                    drawCircle(webcamImage, sample.getRightPupil());
                 }
 
                 //-- 4. Display the image
-                demoPanel.MatToBufferedImage(webcam_image); // We could look at the error...
+                demoPanel.convertMatToBufferedImage(webcamImage); // We could look at the error...
                 demoPanel.repaint();
             }
         }
     }
 
-    private static void addRectangleToImage(Rect face, Mat webcam_image, final Scalar color) {
-        Core.rectangle(webcam_image, face.tl(), face.br(), color);
+    private static void addRectangleToImage(Rect face, Mat webcamImage, final Scalar color) {
+        Core.rectangle(webcamImage, face.tl(), face.br(), color);
     }
 
     private static void drawCircle(Mat img, Point center) {

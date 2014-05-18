@@ -11,21 +11,21 @@ package by.zuyeu.deyestracker.core.exception;
  */
 public class DEyesTrackerException extends Exception {
 
-    private DEyesTrackerExceptionCode code;
-
-    public DEyesTrackerException() {
-    }
+    private final DEyesTrackerExceptionCode code;
 
     public DEyesTrackerException(String message) {
         super(message);
+        code = DEyesTrackerExceptionCode.UNKNOWN;
     }
 
     public DEyesTrackerException(String message, Throwable cause) {
         super(message, cause);
+        code = DEyesTrackerExceptionCode.UNKNOWN;
     }
 
     public DEyesTrackerException(Throwable cause) {
         super(cause);
+        code = DEyesTrackerExceptionCode.UNKNOWN;
     }
 
     public DEyesTrackerException(DEyesTrackerExceptionCode code) {

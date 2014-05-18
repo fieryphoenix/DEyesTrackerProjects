@@ -18,7 +18,8 @@ public class BiggerFaceProcessor implements IProcessor<Rect[], Rect> {
         if (input == null || input.length == 0) {
             return null;
         }
-        int mainFaceIndex = 0; // default if length = 0
+        // default if length = 0
+        int mainFaceIndex = 0;
         double maxArea = 0;
         for (int i = 0; (i < input.length) && (input.length > 1); i++) {
             final Rect rect = input[i];

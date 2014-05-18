@@ -27,7 +27,7 @@ public class CameraFrameCapture implements IFrameCapture {
     private static final int DEFAULT_FRAMES_COUNT = 100;
     private static final int DEFAULT_DEVICE = 0;
 
-    private static final Logger logger = LoggerFactory.getLogger(CameraFrameCapture.class);
+    private static final Logger LOG = LoggerFactory.getLogger(CameraFrameCapture.class);
 
     private volatile boolean isCanceled;
 
@@ -45,20 +45,30 @@ public class CameraFrameCapture implements IFrameCapture {
     public void start() throws DEyesTrackerException {
         open();
         if (capture.isOpened()) {
-            while (!isCanceled) {
-                final Mat webcam_image = new Mat();
-                capture.read(webcam_image);
-                if (!webcam_image.empty()) {
-                    lock.writeLock().lock();
-                    try {
-                        frames.add(webcam_image);
-                    } finally {
-                        lock.writeLock().unlock();
-                    }
-                }
-            }
+            startCapturing();
         } else {
-            throw new DEyesTrackerException(DEyesTrackerExceptionCode.OPEN_CAMERA_FAIL, "capture init failure");
+            throw new DEyesTrackerException(DEyesTrackerExceptionCode.OPEN_CAMERA_FAIL);
+        }
+    }
+
+    private void startCapturing() {
+        LOG.trace("startCapturing() - start;");
+        while (!isCanceled) {
+            final Mat webcamImage = new Mat();
+            capture.read(webcamImage);
+            if (!webcamImage.empty()) {
+                safeAddCapture(webcamImage);
+            }
+        }
+        LOG.trace("startCapturing() - end;");
+    }
+
+    private void safeAddCapture(final Mat webcamImage) {
+        lock.writeLock().lock();
+        try {
+            frames.add(webcamImage);
+        } finally {
+            lock.writeLock().unlock();
         }
     }
 
@@ -69,7 +79,7 @@ public class CameraFrameCapture implements IFrameCapture {
                 capture.open(DEFAULT_DEVICE);
                 Thread.sleep(1000);
             } catch (InterruptedException ex) {
-                logger.error(ex.getMessage());
+                LOG.error(ex.getMessage());
                 throw new DEyesTrackerException(DEyesTrackerExceptionCode.OPEN_CAMERA_FAIL, "capture init failure");
             }
         }
@@ -111,7 +121,7 @@ public class CameraFrameCapture implements IFrameCapture {
         try {
             start();
         } catch (final DEyesTrackerException ex) {
-            logger.error(ex.getMessage());
+            LOG.error("run", ex);
         }
     }
 

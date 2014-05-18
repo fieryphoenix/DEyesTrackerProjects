@@ -12,3 +12,7 @@
 hs_err_pid*
 /DEyesTrackerCore/build/
 /DEyesTrackerCore/dist/
+/DEyesTracker-Preloader/build/
+/DEyesTrackerReader/build/
+/DEyesTracker-Preloader/dist/
+/DEyesTrackerReader/dist/

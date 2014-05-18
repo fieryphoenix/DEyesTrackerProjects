@@ -37,7 +37,6 @@ public class FaceDetector extends BaseDetector {
 
     public Rect detectMain(final Mat inputframe) {
         final Rect[] faces = detectWithClassifier(inputframe, cascade);
-        final Rect mainFace = facesPostProcessor.process(faces);
-        return mainFace;
+        return facesPostProcessor.process(faces);
     }
 }

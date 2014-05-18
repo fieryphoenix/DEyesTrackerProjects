@@ -5,16 +5,16 @@
  */
 package by.zuyeu.deyestracker.core.video.sampler;
 
-import by.zuyeu.deyestracker.core.util.comparator.RectXComparator;
 import by.zuyeu.deyestracker.core.detection.detector.EyesDetector;
 import by.zuyeu.deyestracker.core.detection.detector.FaceDetector;
+import by.zuyeu.deyestracker.core.detection.model.DetectFaceSample;
 import by.zuyeu.deyestracker.core.detection.task.DetectEyesTask;
 import by.zuyeu.deyestracker.core.detection.task.DetectFaceTask;
 import by.zuyeu.deyestracker.core.detection.task.DetectPupilsTask;
 import by.zuyeu.deyestracker.core.exception.DEyesTrackerException;
-import by.zuyeu.deyestracker.core.detection.model.DetectFaceSample;
 import by.zuyeu.deyestracker.core.util.CVCoreUtils;
 import by.zuyeu.deyestracker.core.util.TaskUtils;
+import by.zuyeu.deyestracker.core.util.comparator.RectXComparator;
 import by.zuyeu.deyestracker.core.video.capture.CameraFrameCapture;
 import by.zuyeu.deyestracker.core.video.capture.IFrameCapture;
 import java.util.Arrays;
@@ -99,7 +99,7 @@ public class FaceInfoSampler implements ISampler {
 
         if (mainFace != null) {
             sample.setFace(mainFace);
-            eyes = getEyesRegions(mainFace, webcamImage, eyes);
+            eyes = getEyesRegions(mainFace, webcamImage);
         }
         if (mainFace != null && eyes != null) {
             final int faceCenter = mainFace.x + mainFace.width / 2;
@@ -134,13 +134,15 @@ public class FaceInfoSampler implements ISampler {
     }
 
     private Rect getMainFace(Mat webcamImage) {
+        LOG.trace("getMainFace() - start;");
         Rect mainFace = null;
         final FutureTask<Rect> detectFaceTask = TaskUtils.wrapFutureAnd(new DetectFaceTask(faceDetector, webcamImage), executorService);
         try {
             mainFace = detectFaceTask.get();
         } catch (InterruptedException | ExecutionException ex) {
-            LOG.error(ex.getMessage());
+            LOG.error("getMainFace", ex);
         }
+        LOG.trace("getMainFace() - end;");
         return mainFace;
     }
 
@@ -156,7 +158,7 @@ public class FaceInfoSampler implements ISampler {
             try {
                 pupil = detectPupilTask.get();
             } catch (InterruptedException | ExecutionException ex) {
-                LOG.error(ex.getMessage());
+                LOG.error("findPupil", ex);
             }
             if (pupil != null) {
                 pupil = CVCoreUtils.fixPointFromSubmat(pupil, pupilRegion);
@@ -167,9 +169,9 @@ public class FaceInfoSampler implements ISampler {
         return pupil;
     }
 
-    private Rect[] getEyesRegions(Rect mainFace, Mat webcamImage, Rect[] eyes) {
+    private Rect[] getEyesRegions(Rect mainFace, Mat webcamImage) {
         LOG.trace("getPupilsPoints - start;");
-
+        Rect[] eyes = null;
         final Mat faceImage = CVCoreUtils.selectSubmatByRect(mainFace, webcamImage);
         final Mat faceImageForDetection = selectEyesRegionFromFace(faceImage);
         final FutureTask<Rect[]> detectEyesTask = TaskUtils.wrapFutureAnd(new DetectEyesTask(new EyesDetector[]{leftEyeDetector, rightEyeDetector}, faceImageForDetection), executorService
@@ -177,7 +179,7 @@ public class FaceInfoSampler implements ISampler {
         try {
             eyes = detectEyesTask.get();
         } catch (InterruptedException | ExecutionException ex) {
-            LOG.error(ex.getMessage());
+            LOG.error("getEyesRegions", ex);
         }
         // fix rect coordinates to match whole frame size
         if (eyes != null) {

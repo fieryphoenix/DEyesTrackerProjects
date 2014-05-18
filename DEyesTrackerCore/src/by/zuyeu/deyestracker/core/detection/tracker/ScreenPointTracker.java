@@ -5,17 +5,17 @@
  */
 package by.zuyeu.deyestracker.core.detection.tracker;
 
-import by.zuyeu.deyestracker.core.eda.event.CoreEvent;
-import by.zuyeu.deyestracker.core.exception.DEyesTrackerException;
-import by.zuyeu.deyestracker.core.exception.DEyesTrackerExceptionCode;
 import by.zuyeu.deyestracker.core.detection.learning.TeacherWithUser;
 import by.zuyeu.deyestracker.core.detection.model.DetectFaceSample;
 import by.zuyeu.deyestracker.core.detection.model.StudyResult;
+import by.zuyeu.deyestracker.core.eda.event.CoreEvent;
 import by.zuyeu.deyestracker.core.eda.router.EventRouter;
 import by.zuyeu.deyestracker.core.eda.router.IRouter;
+import by.zuyeu.deyestracker.core.exception.DEyesTrackerException;
+import by.zuyeu.deyestracker.core.exception.DEyesTrackerExceptionCode;
+import by.zuyeu.deyestracker.core.util.ExceptionToEventConverter;
 import by.zuyeu.deyestracker.core.video.sampler.FaceInfoSampler;
 import by.zuyeu.deyestracker.core.video.sampler.ISampler;
-import by.zuyeu.deyestracker.core.util.ExceptionToEventConverter;
 import org.apache.commons.collections4.queue.CircularFifoQueue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -79,6 +79,7 @@ public class ScreenPointTracker {
     private ISampler sampler;
     private CircularFifoQueue<DetectFaceSample> samples;
     private StudyResult studyResult;
+    private boolean isStopped;
 
     protected ScreenPointTracker(final boolean skipInit) throws DEyesTrackerException {
         if (!skipInit) {
@@ -89,14 +90,28 @@ public class ScreenPointTracker {
     }
 
     public void start() throws DEyesTrackerException {
-        //TODO
-        LOG.warn("TEST START - OK");
+        isStopped = false;
+        while (!isStopped) {
+            final DetectFaceSample nextSample = sampler.makeSample();
+            if (nextSample.isComplete()) {
+                //TODO normal
+                final DetectFaceSample lastSample = samples.peek();
+                if (lastSample.equals(nextSample)) {
+                    //TODO
+                }
+            } else {
+                //TODO correct if possible results
+            }
+            samples.add(nextSample);
+        }
+        LOG.info("TEST START - OK");
     }
 
     public void stop() throws DEyesTrackerException {
         //TODO
-        LOG.warn("TEST STOP - OK");
+        isStopped = false;
         sampler.close();
+        LOG.info("TEST STOP - OK");
     }
 
     public IRouter getRouter() {
@@ -134,8 +149,8 @@ public class ScreenPointTracker {
     }
 
     private void dispatchException(final DEyesTrackerException e) {
-        DEyesTrackerExceptionCode code = e.getCode();
-        CoreEvent.EventType item = ExceptionToEventConverter.getEventFromException(code);
+        final DEyesTrackerExceptionCode code = e.getCode();
+        final CoreEvent.EventType item = ExceptionToEventConverter.getEventFromException(code);
         publishEvent(item);
     }
 

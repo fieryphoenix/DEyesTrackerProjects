@@ -15,6 +15,10 @@ import java.util.concurrent.FutureTask;
  */
 public class TaskUtils {
 
+    private TaskUtils() {
+        throw new IllegalAccessError("unconstructable class");
+    }
+
     public static <T extends Object> FutureTask<T> wrapFutureAnd(Callable<T> detectFutureTask, ExecutorService executorService) {
         final FutureTask<T> futureTask = new FutureTask<>(detectFutureTask);
         executorService.execute(futureTask);

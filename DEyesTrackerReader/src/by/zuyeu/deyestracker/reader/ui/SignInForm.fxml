@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.net.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+
+<AnchorPane id="AnchorPane" prefHeight="212.0" prefWidth="320.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="by.zuyeu.deyestracker.reader.ui.SignInFormController">
+   <styleClass>
+      <String fx:value="mainFxmlClass" />
+      <String fx:value="background" />
+   </styleClass>
+   <children>
+      <TextField layoutX="14.0" layoutY="14.0" promptText="%page.login.labels.name" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="20.0" />
+      <TextField layoutX="14.0" layoutY="55.0" promptText="%page.login.labels.password" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="20.0" />
+      <Button layoutX="87.0" layoutY="100.0" mnemonicParsing="false" onAction="#handleSignIn" prefHeight="31.0" prefWidth="151.0" text="%page.login.button.login" AnchorPane.rightAnchor="20.0" />
+      <Separator layoutX="14.0" layoutY="150.0" prefWidth="200.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+      <Button layoutX="50.0" layoutY="171.0" mnemonicParsing="false" onAction="#handleStartWithTeaching" prefHeight="31.0" prefWidth="251.0" styleClass="signup-button" text="%page.login.buttons.signup" AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" />
+   </children>
+</AnchorPane>

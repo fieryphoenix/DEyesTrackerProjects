@@ -1,4 +1,4 @@
-package by.zuyeu.deyestracker.mock;
+package by.zuyeu.deyestracker.teacher.rule;
 
 import java.util.concurrent.CountDownLatch;
 import javafx.application.Platform;

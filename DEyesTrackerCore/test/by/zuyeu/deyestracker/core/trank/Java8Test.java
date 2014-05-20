@@ -6,6 +6,7 @@
 package by.zuyeu.deyestracker.core.trank;
 
 import java.util.Arrays;
+import org.junit.Test;
 import org.opencv.core.Point;
 import org.opencv.core.Rect;
 
@@ -18,7 +19,8 @@ public class Java8Test {
     public Java8Test() {
     }
 
-    public static void main(String[] args) {
+    @Test
+    public void goTest() {
         Rect[] t = new Rect[10];
         for (int i = 0; i < 10; i++) {
             t[i] = new Rect(new Point(i, i), new Point(i + 10, i + 10));

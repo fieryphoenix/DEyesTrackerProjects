@@ -14,6 +14,7 @@ import by.zuyeu.deyestracker.core.eda.router.IRouter;
 import by.zuyeu.deyestracker.core.exception.DEyesTrackerException;
 import by.zuyeu.deyestracker.core.exception.DEyesTrackerExceptionCode;
 import by.zuyeu.deyestracker.core.util.ExceptionToEventConverter;
+import by.zuyeu.deyestracker.core.util.OpenCVLibraryLoader;
 import by.zuyeu.deyestracker.core.video.sampler.FaceInfoSampler;
 import by.zuyeu.deyestracker.core.video.sampler.ISampler;
 import org.apache.commons.collections4.queue.CircularFifoQueue;
@@ -83,6 +84,7 @@ public class ScreenPointTracker {
 
     protected ScreenPointTracker(final boolean skipInit) throws DEyesTrackerException {
         if (!skipInit) {
+            OpenCVLibraryLoader.loadCoreIfNeed();
             initRouter();
             openSampler();
             startStuding();
@@ -133,7 +135,7 @@ public class ScreenPointTracker {
         LOG.trace("openSampler - start;");
         try {
             sampler = new FaceInfoSampler();
-        } catch (final DEyesTrackerException e) {
+        } catch (DEyesTrackerException e) {
             dispatchException(e);
             throw e;
         }

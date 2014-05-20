@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package by.zuyeu.deyestracker.scenario;
+package by.zuyeu.deyestracker.teacher.scenario;
 
 import by.zuyeu.deyestracker.core.detection.model.StudyResult;
 import by.zuyeu.deyestracker.core.detection.tracker.ScreenPointTracker;
@@ -56,7 +56,7 @@ public class TeachingScenario extends Task<StudyResult> {
             result = tracker.getStudyResult();
             tracker.stop();
         } catch (DEyesTrackerException e) {
-            LOG.warn("init core elements failure: code = {}, message = {}", e.getCode(), e.getMessage());
+            LOG.warn("init core elements failure", e);
             throw e;
         }
         LOG.info("call - ends: result = " + result);

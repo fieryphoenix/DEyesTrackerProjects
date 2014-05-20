@@ -5,7 +5,8 @@
  */
 package by.zuyeu.deyestracker.core.trank;
 
-import org.apache.commons.collections4.queue.CircularFifoQueue;
+import java.io.InputStream;
+import org.junit.Test;
 
 /**
  *
@@ -16,14 +17,9 @@ public class TestCommon {
     public TestCommon() {
     }
 
-    public static void main(String[] args) {
-        CircularFifoQueue<Integer> numbers = new CircularFifoQueue<>(3);
-        numbers.add(1);
-        numbers.add(2);
-        numbers.add(3);
-        numbers.add(4);
-        numbers.add(5);
-        System.out.println("first = " + numbers.peek());
-        System.out.println("last = " + numbers.get(numbers.size() - 1));
+    @Test
+    public void testLoad() {
+        InputStream in = TestCommon.class.getResourceAsStream("/lib/x64/opencv_java249.dll");
+        System.out.println("in = " + in);
     }
 }

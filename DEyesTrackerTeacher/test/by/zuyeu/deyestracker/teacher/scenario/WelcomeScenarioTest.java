@@ -3,9 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package by.zuyeu.deyestracker.scenario;
+package by.zuyeu.deyestracker.teacher.scenario;
 
-import by.zuyeu.deyestracker.mock.JavaFXThreadingRule;
+import by.zuyeu.deyestracker.teacher.rule.JavaFXThreadingRule;
 import javafx.beans.property.Property;
 import javafx.beans.property.StringPropertyBase;
 import org.junit.After;

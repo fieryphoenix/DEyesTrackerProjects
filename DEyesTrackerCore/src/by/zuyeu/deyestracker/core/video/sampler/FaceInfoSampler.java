@@ -13,6 +13,7 @@ import by.zuyeu.deyestracker.core.detection.task.DetectFaceTask;
 import by.zuyeu.deyestracker.core.detection.task.DetectPupilsTask;
 import by.zuyeu.deyestracker.core.exception.DEyesTrackerException;
 import by.zuyeu.deyestracker.core.util.CVCoreUtils;
+import by.zuyeu.deyestracker.core.util.OpenCVLibraryLoader;
 import by.zuyeu.deyestracker.core.util.TaskUtils;
 import by.zuyeu.deyestracker.core.util.comparator.RectXComparator;
 import by.zuyeu.deyestracker.core.video.capture.CameraFrameCapture;
@@ -22,7 +23,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.FutureTask;
-import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.Point;
 import org.opencv.core.Rect;
@@ -47,7 +47,7 @@ public class FaceInfoSampler implements ISampler {
 
     public FaceInfoSampler() throws DEyesTrackerException {
         // Load the native library.
-        System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
+        OpenCVLibraryLoader.loadCoreIfNeed();
         initCamera();
         initDetectors();
     }

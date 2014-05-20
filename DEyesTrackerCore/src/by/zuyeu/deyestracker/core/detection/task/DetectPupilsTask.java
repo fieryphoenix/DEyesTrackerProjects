@@ -5,7 +5,6 @@
  */
 package by.zuyeu.deyestracker.core.detection.task;
 
-import java.util.concurrent.Callable;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.Point;
@@ -18,7 +17,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author Fieryphoenix
  */
-public class DetectPupilsTask implements Callable<Point> {
+public class DetectPupilsTask implements IDetectTask<Point> {
 
     private static final Logger LOG = LoggerFactory.getLogger(DetectPupilsTask.class);
     private static final int GAUS_BLUR_DELTA = 2;

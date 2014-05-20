@@ -5,7 +5,7 @@
  */
 package by.zuyeu.deyestracker.core.util;
 
-import java.util.concurrent.Callable;
+import by.zuyeu.deyestracker.core.detection.task.IDetectTask;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.FutureTask;
 
@@ -19,7 +19,7 @@ public class TaskUtils {
         throw new IllegalAccessError("unconstructable class");
     }
 
-    public static <T extends Object> FutureTask<T> wrapFutureAnd(Callable<T> detectFutureTask, ExecutorService executorService) {
+    public static <T extends Object> FutureTask<T> wrapFutureAnd(IDetectTask<T> detectFutureTask, ExecutorService executorService) {
         final FutureTask<T> futureTask = new FutureTask<>(detectFutureTask);
         executorService.execute(futureTask);
         return futureTask;

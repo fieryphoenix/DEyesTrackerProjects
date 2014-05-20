@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package by.zuyeu.deyestracker.scenario;
+package by.zuyeu.deyestracker.teacher.scenario;
 
 import javafx.application.Platform;
 import javafx.beans.property.Property;

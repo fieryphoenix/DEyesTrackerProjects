@@ -7,6 +7,7 @@ package by.zuyeu.deyestracker.core.video.capture;
 
 import by.zuyeu.deyestracker.core.exception.DEyesTrackerException;
 import by.zuyeu.deyestracker.core.exception.DEyesTrackerExceptionCode;
+import by.zuyeu.deyestracker.core.util.OpenCVLibraryLoader;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -35,7 +36,8 @@ public class CameraFrameCapture implements IFrameCapture {
     private final CircularFifoQueue<Mat> frames;
     private final ReadWriteLock lock = new ReentrantReadWriteLock();
 
-    public CameraFrameCapture() {
+    public CameraFrameCapture() throws DEyesTrackerException {
+        OpenCVLibraryLoader.loadCoreIfNeed();
         frames = new CircularFifoQueue<>(DEFAULT_FRAMES_COUNT);
         capture = new VideoCapture(DEFAULT_DEVICE);
         isCanceled = false;
@@ -120,7 +122,7 @@ public class CameraFrameCapture implements IFrameCapture {
     public void run() {
         try {
             start();
-        } catch (final DEyesTrackerException ex) {
+        } catch (DEyesTrackerException ex) {
             LOG.error("run", ex);
         }
     }

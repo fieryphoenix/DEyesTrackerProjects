@@ -6,7 +6,6 @@
 package by.zuyeu.deyestracker.core.detection.task;
 
 import by.zuyeu.deyestracker.core.detection.detector.EyesDetector;
-import java.util.concurrent.Callable;
 import org.apache.commons.lang3.ArrayUtils;
 import org.opencv.core.Mat;
 import org.opencv.core.Rect;
@@ -17,7 +16,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author Fieryphoenix
  */
-public class DetectEyesTask implements Callable<Rect[]> {
+public class DetectEyesTask implements IDetectTask<Rect[]> {
 
     private static final Logger LOG = LoggerFactory.getLogger(DetectEyesTask.class);
 

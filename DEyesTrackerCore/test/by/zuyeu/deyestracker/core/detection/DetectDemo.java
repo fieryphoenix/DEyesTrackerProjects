@@ -10,6 +10,7 @@ package by.zuyeu.deyestracker.core.detection;
  * Search for the faces and eyes
  */
 import by.zuyeu.deyestracker.core.detection.model.DetectFaceSample;
+import by.zuyeu.deyestracker.core.detection.task.IDetectTask;
 import by.zuyeu.deyestracker.core.exception.DEyesTrackerException;
 import by.zuyeu.deyestracker.core.util.TaskUtils;
 import by.zuyeu.deyestracker.core.video.capture.IFrameCapture;
@@ -17,7 +18,6 @@ import by.zuyeu.deyestracker.core.video.sampler.FaceInfoSampler;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
-import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -138,7 +138,7 @@ public class DetectDemo {
     private static final Scalar RED = new Scalar(0, 0, 255);
 }
 
-class DetectTask implements Callable<DetectFaceSample> {
+class DetectTask implements IDetectTask<DetectFaceSample> {
 
     private final FaceInfoSampler sampler;
 

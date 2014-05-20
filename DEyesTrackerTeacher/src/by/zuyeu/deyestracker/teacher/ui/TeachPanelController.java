@@ -3,11 +3,11 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package by.zuyeu.deyestracker;
+package by.zuyeu.deyestracker.teacher.ui;
 
 import by.zuyeu.deyestracker.core.detection.model.StudyResult;
-import by.zuyeu.deyestracker.scenario.TeachingScenario;
-import by.zuyeu.deyestracker.scenario.WelcomeScenario;
+import by.zuyeu.deyestracker.teacher.scenario.TeachingScenario;
+import by.zuyeu.deyestracker.teacher.scenario.WelcomeScenario;
 import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.concurrent.ExecutionException;
@@ -65,6 +65,7 @@ public class TeachPanelController implements Initializable {
                         -> scenarioText.setValue("Готово! Спасибо!")
                 );
                 LOG.debug("RESULT HERE = " + tResult);
+                Thread.sleep(1000);
                 Platform.runLater(()
                         -> ((Stage) lText.getScene().getWindow()).close());
 

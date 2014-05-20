@@ -5,14 +5,14 @@
  */
 package by.zuyeu.deyestracker.core.detection.learning;
 
-import by.zuyeu.deyestracker.core.eda.event.StudyProcessEvent;
-import by.zuyeu.deyestracker.core.exception.DEyesTrackerException;
-import by.zuyeu.deyestracker.core.exception.DEyesTrackerExceptionCode;
 import by.zuyeu.deyestracker.core.detection.model.DetectFaceSample;
 import by.zuyeu.deyestracker.core.detection.model.StudyResult;
+import by.zuyeu.deyestracker.core.eda.event.StudyProcessEvent;
 import by.zuyeu.deyestracker.core.eda.router.IRouter;
-import by.zuyeu.deyestracker.core.video.sampler.ISampler;
+import by.zuyeu.deyestracker.core.exception.DEyesTrackerException;
+import by.zuyeu.deyestracker.core.exception.DEyesTrackerExceptionCode;
 import by.zuyeu.deyestracker.core.util.CVCoreUtils;
+import by.zuyeu.deyestracker.core.video.sampler.ISampler;
 import java.util.ArrayList;
 import java.util.List;
 import javafx.concurrent.Task;
@@ -23,7 +23,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author Fieryphoenix
  */
-public class TeacherWithUser extends Task<StudyResult> {
+public class TeacherWithUser extends Task<StudyResult> implements ITeacher {
 
     private static final Logger LOG = LoggerFactory.getLogger(TeacherWithUser.class);
 
@@ -53,7 +53,8 @@ public class TeacherWithUser extends Task<StudyResult> {
         return studyResult;
     }
 
-    private DetectFaceSample getStudyResult(StudyProcessEvent.Region region) throws DEyesTrackerException {
+    @Override
+    public DetectFaceSample getStudyResult(StudyProcessEvent.Region region) throws DEyesTrackerException {
         router.sendEvent(new StudyProcessEvent(region));
         final List<DetectFaceSample> samples = new ArrayList<>(MIN_COMPLETE_SAMPLES_NUMBER);
         do {

@@ -5,11 +5,12 @@
  */
 package by.zuyeu.deyestracker.reader.ui.signin;
 
+import by.zuyeu.deyestracker.reader.ui.AppController;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
+import javafx.scene.control.TextField;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,14 +19,22 @@ import org.slf4j.LoggerFactory;
  *
  * @author Fieryphoenix
  */
-public class SignInFormController implements Initializable {
+public class SignInFormController extends AppController {
 
     private static final Logger LOG = LoggerFactory.getLogger(SignInFormController.class);
+
+    @FXML
+    private TextField fLogin;
+    @FXML
+    private TextField fPassword;
 
     private ResourceBundle bundle;
 
     /**
      * Initializes the controller class.
+     *
+     * @param url
+     * @param rb
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -41,4 +50,5 @@ public class SignInFormController implements Initializable {
     private void handleStartWithTeaching(ActionEvent event) {
         LOG.debug("Teaching!");
     }
+
 }

@@ -5,6 +5,7 @@
  */
 package by.zuyeu.deyestracker.reader.ui;
 
+import by.zuyeu.deyestracker.reader.repository.DAOFactory;
 import java.io.IOException;
 import java.util.Locale;
 import java.util.ResourceBundle;
@@ -31,10 +32,12 @@ public class DEyesTrackerReader extends Application {
     private static final String COMMON_CSS = "/by/zuyeu/deyestracker/reader/ui/css/Common.css";
 
     private Stage stage;
+    private DAOFactory factory;
 
     @Override
     public void start(Stage stage) throws Exception {
         this.stage = stage;
+        factory = DAOFactory.getFactory(DAOFactory.FactoryType.MEMORY);
 
         final StackPane root = new StackPane();
         Scene scene = new Scene(root);
@@ -49,6 +52,8 @@ public class DEyesTrackerReader extends Application {
             FXMLLoader fxmlLoader = new FXMLLoader();
             fxmlLoader.setResources(ResourceBundle.getBundle(BUNDLE, locale));
             Pane pane = (AnchorPane) fxmlLoader.load(this.getClass().getResource(START_PAGE).openStream());
+            final AppController controller = fxmlLoader.<AppController>getController();
+            controller.setFactory(factory);
             // replace the content
             StackPane content = (StackPane) stage.getScene().getRoot();
             content.getChildren().clear();

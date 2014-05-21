@@ -5,11 +5,11 @@
  */
 package by.zuyeu.deyestracker.reader.ui.readpane;
 
+import by.zuyeu.deyestracker.reader.ui.AppController;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.stage.Stage;
 import org.slf4j.Logger;
@@ -20,7 +20,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author Fieryphoenix
  */
-public class ReadPaneController implements Initializable {
+public class ReadPaneController extends AppController {
 
     private static final Logger LOG = LoggerFactory.getLogger(ReadPaneController.class);
 
@@ -36,6 +36,9 @@ public class ReadPaneController implements Initializable {
 
     /**
      * Initializes the controller class.
+     *
+     * @param url
+     * @param rb
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {

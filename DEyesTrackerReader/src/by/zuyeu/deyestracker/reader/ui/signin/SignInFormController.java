@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package by.zuyeu.deyestracker.reader.ui;
+package by.zuyeu.deyestracker.reader.ui.signin;
 
 import java.net.URL;
 import java.util.ResourceBundle;

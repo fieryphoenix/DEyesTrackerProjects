@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.net.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane id="AnchorPane" prefHeight="768.0" prefWidth="1024.0" styleClass="background" stylesheets="@../css/Common.css" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8" fx:controller="by.zuyeu.deyestracker.reader.ui.readpane.ReadPaneController">
+   <children>
+      <MenuBar layoutX="35.0" layoutY="18.0" prefHeight="33.0" prefWidth="1024.0" styleClass="profileTitle" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <menus>
+          <Menu mnemonicParsing="false" text="File">
+            <items>
+                  <MenuItem mnemonicParsing="false" text="Start Teaching" />
+                  <MenuItem mnemonicParsing="false" text="Sign Out" />
+                  <MenuItem mnemonicParsing="false" text="Unspecified Action">
+                     <graphic>
+                        <Separator prefWidth="200.0" />
+                     </graphic>
+                  </MenuItem>
+              <MenuItem mnemonicParsing="false" onAction="#closeButtonAction" text="Close" />
+            </items>
+          </Menu>
+          <Menu mnemonicParsing="false" text="Help">
+            <items>
+              <MenuItem mnemonicParsing="false" text="About" />
+            </items>
+          </Menu>
+        </menus>
+      </MenuBar>
+   </children>
+</AnchorPane>

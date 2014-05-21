@@ -26,8 +26,9 @@ public class DEyesTrackerReader extends Application {
 
     private static final Logger LOG = LoggerFactory.getLogger(DEyesTrackerReader.class);
 
-    private static final String LOGIN_PAGE = "SignInForm.fxml";
+    private static final String START_PAGE = "signin/SignInForm.fxml";
     private static final String BUNDLE = "by.zuyeu.deyestracker.reader.ui.bundle.messages";
+    private static final String COMMON_CSS = "/by/zuyeu/deyestracker/reader/ui/css/Common.css";
 
     private Stage stage;
 
@@ -39,21 +40,22 @@ public class DEyesTrackerReader extends Application {
         Scene scene = new Scene(root);
         stage.setScene(scene);
 
-        loadView(Locale.ENGLISH);
+        changeView(Locale.ENGLISH);
         stage.show();
     }
 
-    private void loadView(Locale locale) {
+    public void changeView(Locale locale) {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader();
             fxmlLoader.setResources(ResourceBundle.getBundle(BUNDLE, locale));
-            Pane pane = (AnchorPane) fxmlLoader.load(this.getClass().getResource(LOGIN_PAGE).openStream());
+            Pane pane = (AnchorPane) fxmlLoader.load(this.getClass().getResource(START_PAGE).openStream());
             // replace the content
             StackPane content = (StackPane) stage.getScene().getRoot();
             content.getChildren().clear();
             content.getChildren().add(pane);
+            stage.getScene().getStylesheets().add(COMMON_CSS);
         } catch (IOException ex) {
-            LOG.error("loadView", ex);
+            LOG.error("changeView", ex);
         }
     }
 

@@ -14,7 +14,8 @@ import javafx.fxml.Initializable;
  */
 public abstract class AppController implements Initializable {
 
-    private DAOFactory factory;
+    protected DAOFactory factory;
+    protected DEyesTrackerReader application;
 
     public void setFactory(DAOFactory factory) {
         this.factory = factory;
@@ -22,5 +23,13 @@ public abstract class AppController implements Initializable {
 
     public DAOFactory getFactory() {
         return factory;
+    }
+
+    public DEyesTrackerReader getApplication() {
+        return application;
+    }
+
+    public void setApplication(DEyesTrackerReader application) {
+        this.application = application;
     }
 }

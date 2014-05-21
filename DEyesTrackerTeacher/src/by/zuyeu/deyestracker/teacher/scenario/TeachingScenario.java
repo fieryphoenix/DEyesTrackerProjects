@@ -9,8 +9,8 @@ import by.zuyeu.deyestracker.core.detection.model.StudyResult;
 import by.zuyeu.deyestracker.core.detection.tracker.ScreenPointTracker;
 import by.zuyeu.deyestracker.core.eda.event.StudyProcessEvent;
 import by.zuyeu.deyestracker.core.eda.event.handler.DEyesTrackerHandler;
-import by.zuyeu.deyestracker.core.eda.router.EventRouter;
 import by.zuyeu.deyestracker.core.eda.router.IRouter;
+import by.zuyeu.deyestracker.core.eda.router.RouterFactory;
 import by.zuyeu.deyestracker.core.exception.DEyesTrackerException;
 import by.zuyeu.deyestracker.core.video.sampler.FaceInfoSampler;
 import by.zuyeu.deyestracker.core.video.sampler.ISampler;
@@ -43,7 +43,8 @@ public class TeachingScenario extends Task<StudyResult> {
     @Override
     protected StudyResult call() throws DEyesTrackerException {
         LOG.info("call - start;");
-        final IRouter router = new EventRouter();
+        final IRouter router = RouterFactory.getRouter(RouterFactory.RouterType.EVENT);
+
         router.registerHandler(StudyProcessEvent.class, (DEyesTrackerHandler<StudyProcessEvent>) (StudyProcessEvent event) -> {
             Platform.runLater(new PointerSwitcher(event.getRegion()));
             LOG.trace("e = " + event);
@@ -65,9 +66,9 @@ public class TeachingScenario extends Task<StudyResult> {
 
     private class PointerSwitcher extends Task<Void> {
 
-        private final StudyProcessEvent.Region region;
+        private final StudyProcessEvent.StudyRegion region;
 
-        public PointerSwitcher(StudyProcessEvent.Region region) {
+        public PointerSwitcher(StudyProcessEvent.StudyRegion region) {
             this.region = region;
         }
 

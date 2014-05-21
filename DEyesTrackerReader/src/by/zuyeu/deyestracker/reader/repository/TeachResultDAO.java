@@ -14,7 +14,7 @@ import by.zuyeu.deyestracker.reader.model.User;
  */
 public interface TeachResultDAO {
 
-    void saveDetectResult(StudyResult2 studyResult2);
+    boolean saveTechingResult(User student, StudyResult2 studyResult2);
 
     StudyResult2 findStudyResultByUser(User user);
 }

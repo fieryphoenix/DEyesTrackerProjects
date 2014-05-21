@@ -6,9 +6,11 @@
 package by.zuyeu.deyestracker.reader.util;
 
 import by.zuyeu.deyestracker.core.detection.model.DetectFaceSample;
+import by.zuyeu.deyestracker.core.detection.model.StudyResult;
 import by.zuyeu.deyestracker.reader.model.DetectFaceSample2;
 import by.zuyeu.deyestracker.reader.model.Point2;
 import by.zuyeu.deyestracker.reader.model.Rect2;
+import by.zuyeu.deyestracker.reader.model.StudyResult2;
 import org.opencv.core.Point;
 import org.opencv.core.Rect;
 
@@ -21,7 +23,16 @@ public class ObjectTransformer {
     private ObjectTransformer() {
     }
 
-    public static DetectFaceSample2 transformDetectResultToSerializableType(DetectFaceSample sample) {
+    public static StudyResult2 transformStudyResultToSerializableType(StudyResult sample) {
+        final StudyResult2 result2 = new StudyResult2();
+        result2.setBl(transformDetectSampleToSerializableType(sample.getBottomLeft()));
+        result2.setTl(transformDetectSampleToSerializableType(sample.getTopLeft()));
+        result2.setBr(transformDetectSampleToSerializableType(sample.getBottomRight()));
+        result2.setTr(transformDetectSampleToSerializableType(sample.getTopRight()));
+        return result2;
+    }
+
+    public static DetectFaceSample2 transformDetectSampleToSerializableType(DetectFaceSample sample) {
         final DetectFaceSample2 sample2 = new DetectFaceSample2();
         sample2.setFace(transformRectToSerializableType(sample.getFace()));
         sample2.setLeftEye(transformRectToSerializableType(sample.getLeftEye()));
@@ -47,17 +58,17 @@ public class ObjectTransformer {
         return point2;
     }
 
-    public static DetectFaceSample transformDetectResultToSerializableType(DetectFaceSample2 sample2) {
+    public static DetectFaceSample transformDetectSample2ToCVType(DetectFaceSample2 sample2) {
         final DetectFaceSample sample = new DetectFaceSample();
-        sample.setFace(transformRectToSerializableType(sample2.getFace()));
-        sample.setLeftEye(transformRectToSerializableType(sample2.getLeftEye()));
-        sample.setRightEye(transformRectToSerializableType(sample2.getRightEye()));
-        sample.setLeftPupil(transformPointToSerializableType(sample2.getLeftPupil()));
-        sample.setRightPupil(transformPointToSerializableType(sample2.getRightPupil()));
+        sample.setFace(transformRect2ToCVType(sample2.getFace()));
+        sample.setLeftEye(transformRect2ToCVType(sample2.getLeftEye()));
+        sample.setRightEye(transformRect2ToCVType(sample2.getRightEye()));
+        sample.setLeftPupil(transformPoint2ToCVType(sample2.getLeftPupil()));
+        sample.setRightPupil(transformPoint2ToCVType(sample2.getRightPupil()));
         return sample;
     }
 
-    private static Rect transformRectToSerializableType(Rect2 rect2) {
+    private static Rect transformRect2ToCVType(Rect2 rect2) {
         final Rect rect = new Rect();
         rect.x = rect2.getX();
         rect.y = rect2.getY();
@@ -66,7 +77,7 @@ public class ObjectTransformer {
         return rect;
     }
 
-    private static Point transformPointToSerializableType(Point2 point2) {
+    private static Point transformPoint2ToCVType(Point2 point2) {
         final Point point = new Point();
         point.x = point2.getX();
         point.y = point2.getY();

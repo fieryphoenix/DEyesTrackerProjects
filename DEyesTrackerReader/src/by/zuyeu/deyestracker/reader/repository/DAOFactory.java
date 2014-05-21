@@ -28,17 +28,16 @@ public abstract class DAOFactory {
     public abstract TeachResultDAO getTeachResultDAO();
 
     public static final DAOFactory getFactory(FactoryType type) {
-        DAOFactory factory = null;
         switch (type) {
             case JAXB:
-                factory = FACTORIES.getOrDefault(type, new JaxbDAOFactory());
+                FACTORIES.putIfAbsent(type, new JaxbDAOFactory());
                 break;
             case MEMORY:
-                factory = FACTORIES.getOrDefault(type, new MemoryDAOFactory());
+                FACTORIES.putIfAbsent(type, new MemoryDAOFactory());
                 break;
             default:
                 throw new UnsupportedOperationException("no such factory");
         }
-        return factory;
+        return FACTORIES.get(type);
     }
 }

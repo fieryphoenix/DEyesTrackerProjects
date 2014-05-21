@@ -6,6 +6,7 @@
 package by.zuyeu.deyestracker.reader.model;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 /**
  *
@@ -15,6 +16,15 @@ public class User implements Serializable {
 
     private String login;
     private String password;
+
+    public User() {
+
+    }
+
+    public User(String login, String password) {
+        this.login = login;
+        this.password = password;
+    }
 
     /**
      * @return the login
@@ -42,5 +52,36 @@ public class User implements Serializable {
      */
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 79 * hash + Objects.hashCode(this.login);
+        hash = 79 * hash + Objects.hashCode(this.password);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final User other = (User) obj;
+        if (!Objects.equals(this.login, other.login)) {
+            return false;
+        }
+        if (!Objects.equals(this.password, other.password)) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" + "login=" + login + ", password=" + password + '}';
     }
 }

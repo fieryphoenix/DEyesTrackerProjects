@@ -7,6 +7,7 @@ package by.zuyeu.deyestracker.core.detection.learning;
 
 import by.zuyeu.deyestracker.core.detection.model.DetectFaceSample;
 import by.zuyeu.deyestracker.core.detection.model.StudyResult;
+import by.zuyeu.deyestracker.core.eda.event.QualityEvent;
 import by.zuyeu.deyestracker.core.eda.event.StudyProcessEvent;
 import by.zuyeu.deyestracker.core.eda.router.IRouter;
 import by.zuyeu.deyestracker.core.exception.DEyesTrackerException;
@@ -43,24 +44,28 @@ public class TeacherWithUser extends Task<StudyResult> implements ITeacher {
     @Override
     public StudyResult call() throws Exception {
 
-        final DetectFaceSample tl = getStudyResult(StudyProcessEvent.Region.TOP_LEFT);
-        final DetectFaceSample tr = getStudyResult(StudyProcessEvent.Region.TOP_RIGHT);
-        final DetectFaceSample bl = getStudyResult(StudyProcessEvent.Region.BOTTOM_LEFT);
-        final DetectFaceSample br = getStudyResult(StudyProcessEvent.Region.BOTTOM_RIGHT);
+        final DetectFaceSample tl = getStudyResult(StudyProcessEvent.StudyRegion.TOP_LEFT);
+        final DetectFaceSample tr = getStudyResult(StudyProcessEvent.StudyRegion.TOP_RIGHT);
+        final DetectFaceSample bl = getStudyResult(StudyProcessEvent.StudyRegion.BOTTOM_LEFT);
+        final DetectFaceSample br = getStudyResult(StudyProcessEvent.StudyRegion.BOTTOM_RIGHT);
 
         StudyResult studyResult = new StudyResult(tl, bl, tr, br);
-        router.sendEvent(new StudyProcessEvent(StudyProcessEvent.Region.NONE));
+        router.sendEvent(new StudyProcessEvent(StudyProcessEvent.StudyRegion.NONE));
         return studyResult;
     }
 
     @Override
-    public DetectFaceSample getStudyResult(StudyProcessEvent.Region region) throws DEyesTrackerException {
+    public DetectFaceSample getStudyResult(StudyProcessEvent.StudyRegion region) throws DEyesTrackerException {
+        LOG.debug("getStudyResult() - start: region = {}", region);
         router.sendEvent(new StudyProcessEvent(region));
         final List<DetectFaceSample> samples = new ArrayList<>(MIN_COMPLETE_SAMPLES_NUMBER);
         do {
             final DetectFaceSample sample = sampler.makeSample();
             if (sample.isComplete()) {
                 samples.add(sample);
+                router.sendEvent(new QualityEvent(QualityEvent.QualityType.GOOD));
+            } else {
+                router.sendEvent(new QualityEvent(QualityEvent.QualityType.BAD));
             }
         } while (samples.size() < MIN_COMPLETE_SAMPLES_NUMBER);
         // in sum operation all elements are complete - no need to check NULL
@@ -80,6 +85,8 @@ public class TeacherWithUser extends Task<StudyResult> implements ITeacher {
         accumulator.setRightEye(CVCoreUtils.divideRect(accumulator.getRightEye(), MIN_COMPLETE_SAMPLES_NUMBER));
         accumulator.setLeftPupil(CVCoreUtils.dividePoint(accumulator.getLeftPupil(), MIN_COMPLETE_SAMPLES_NUMBER));
         accumulator.setRightPupil(CVCoreUtils.dividePoint(accumulator.getRightPupil(), MIN_COMPLETE_SAMPLES_NUMBER));
+
+        LOG.debug("getStudyResult() - end;");
         return accumulator;
     }
 

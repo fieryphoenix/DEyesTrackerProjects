@@ -5,6 +5,7 @@
  */
 package by.zuyeu.deyestracker.teacher.ui;
 
+import by.zuyeu.deyestracker.teacher.model.ResultPacket;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -18,9 +19,16 @@ import javafx.stage.Stage;
  */
 public class DEyesTrackerTeacher extends Application {
 
+    private static final String TEACH_PANEL = "TeachPanel.fxml";
+    //packet to send to interraction app
+    private final ResultPacket teachPacket = new ResultPacket();
+
     @Override
     public void start(Stage stage) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getResource("TeachPanel.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader();
+        Parent root = fxmlLoader.load(getClass().getResource(TEACH_PANEL).openStream());
+        TeachPanelController controller = fxmlLoader.<TeachPanelController>getController();
+        controller.setTeachPacket(teachPacket);
 
         final Scene scene = new Scene(root);
         scene.setOnKeyPressed(t -> {
@@ -34,6 +42,10 @@ public class DEyesTrackerTeacher extends Application {
         stage.setFullScreen(true);
         stage.setResizable(false);
         stage.show();
+    }
+
+    public ResultPacket getTeachPacket() {
+        return teachPacket;
     }
 
     /**

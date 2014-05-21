@@ -6,6 +6,14 @@
 package by.zuyeu.deyestracker.teacher.ui;
 
 import by.zuyeu.deyestracker.core.detection.model.StudyResult;
+import by.zuyeu.deyestracker.core.eda.event.CoreEvent;
+import by.zuyeu.deyestracker.core.eda.event.QualityEvent;
+import by.zuyeu.deyestracker.core.eda.event.handler.DEyesTrackerHandler;
+import by.zuyeu.deyestracker.core.eda.router.IRouter;
+import by.zuyeu.deyestracker.core.eda.router.RouterFactory;
+import by.zuyeu.deyestracker.teacher.handler.QualityHandler;
+import by.zuyeu.deyestracker.teacher.model.AppEvent;
+import by.zuyeu.deyestracker.teacher.model.ResultPacket;
 import by.zuyeu.deyestracker.teacher.scenario.TeachingScenario;
 import by.zuyeu.deyestracker.teacher.scenario.WelcomeScenario;
 import java.net.URL;
@@ -42,34 +50,57 @@ public class TeachPanelController implements Initializable {
     private Circle cBR;
     @FXML
     private Label lText;
+    @FXML
+    private Label lQuality;
 
     private Property<String> scenarioText;
+    private ResultPacket teachPacket;
+    private final IRouter router = RouterFactory.getRouter(RouterFactory.RouterType.EVENT);
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         scenarioText = new SimpleStringProperty();
         lText.textProperty().bind(scenarioText);
+        router.registerHandler(CoreEvent.class, (DEyesTrackerHandler<CoreEvent>) (CoreEvent event) -> {
+            LOG.debug("handle() - event = {}", event);
+            if (event.getAction() != CoreEvent.EventType.START_DETECTION || event.getAction() != CoreEvent.EventType.HOLD_DETECTION) {
+                router.sendEvent(new AppEvent(AppEvent.Action.ERROR));
+            }
+        });
+        router.registerHandler(QualityEvent.class, new QualityHandler(lQuality));
         new ScenarioController().start();
+    }
+
+    public void setTeachPacket(ResultPacket teachPacket) {
+        this.teachPacket = teachPacket;
     }
 
     class ScenarioController extends Thread {
 
-        final ExecutorService executorService = Executors.newSingleThreadExecutor();
+        private final ExecutorService executorService = Executors.newSingleThreadExecutor();
+        private final IRouter router = RouterFactory.getRouter(RouterFactory.RouterType.EVENT);
 
         @Override
         public void run() {
             try {
+                router.sendEvent(new AppEvent(AppEvent.Action.START));
                 runWelcomeScenario();
                 final StudyResult tResult = runTeachingScenario();
                 Platform.runLater(()
                         -> scenarioText.setValue("Готово! Спасибо!")
                 );
                 LOG.debug("RESULT HERE = " + tResult);
+                final AppEvent endEvent = new AppEvent(AppEvent.Action.END);
+                endEvent.setPacket(tResult);
                 Thread.sleep(1000);
                 Platform.runLater(()
                         -> ((Stage) lText.getScene().getWindow()).close());
+                router.sendEvent(endEvent);
 
             } catch (InterruptedException | ExecutionException e) {
+                Platform.runLater(()
+                        -> ((Stage) lText.getScene().getWindow()).close());
+                router.sendEvent(new AppEvent(AppEvent.Action.ERROR));
                 LOG.error("Teach run", e);
             }
         }
@@ -85,6 +116,8 @@ public class TeachPanelController implements Initializable {
             final TeachingScenario scenario = new TeachingScenario(cTL.visibleProperty(), cTR.visibleProperty(), cBL.visibleProperty(), cBR.visibleProperty());
             executorService.execute(scenario);
             final StudyResult result = scenario.get();
+            teachPacket.setStudyResult(result);
+            teachPacket.setIsEmpty(false);
             LOG.trace("runTeachingScenario - end: result = " + result);
             return result;
         }

@@ -13,14 +13,14 @@ import java.util.Objects;
  */
 public class StudyProcessEvent implements DEyeTrackEvent<StudyProcessEvent> {
 
-    public static enum Region {
+    public static enum StudyRegion {
 
         TOP_LEFT, TOP_RIGHT, BOTTOM_LEFT, BOTTOM_RIGHT, NONE;
     }
 
-    private final Region region;
+    private final StudyRegion region;
 
-    public StudyProcessEvent(StudyProcessEvent.Region region) {
+    public StudyProcessEvent(StudyProcessEvent.StudyRegion region) {
         this.region = region;
     }
 
@@ -29,7 +29,7 @@ public class StudyProcessEvent implements DEyeTrackEvent<StudyProcessEvent> {
         return (Class<StudyProcessEvent>) getClass();
     }
 
-    public Region getRegion() {
+    public StudyRegion getRegion() {
         return region;
     }
 

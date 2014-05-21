@@ -16,4 +16,6 @@ public interface UserDAO {
     boolean checkUser(String login, String password);
 
     void saveUser(User user);
+
+    User findUser(String login, String password);
 }

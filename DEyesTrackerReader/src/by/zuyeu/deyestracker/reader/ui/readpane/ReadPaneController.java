@@ -10,7 +10,6 @@ import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
 import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,7 +28,7 @@ public class ReadPaneController extends AppController {
     @FXML
     private void closeButtonAction(ActionEvent event) {
         // get a handle to the stage
-        Stage stage = (Stage) ((Button) event.getSource()).getScene().getWindow();
+        Stage stage = application.getStage();
         // do what you have to do
         stage.close();
     }

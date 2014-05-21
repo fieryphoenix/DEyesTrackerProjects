@@ -32,9 +32,7 @@ public class EventRouter implements IRouter {
     public void registerHandler(final Class<? extends DEyeTrackEvent> event, final DEyesTrackerHandler handler) {
         LOG.info("registerHandler() - start: event = {}, handler = {}", event, handler);
 
-        if (!handlers.containsKey(event)) {
-            handlers.put(event, new LinkedList<>());
-        }
+        handlers.putIfAbsent(event, new LinkedList<>());
         final List<DEyesTrackerHandler> classHandlers = handlers.get(event);
         classHandlers.add(handler);
 
@@ -59,9 +57,11 @@ public class EventRouter implements IRouter {
 
         if (handlers.containsKey(event.getType())) {
             final List<DEyesTrackerHandler> classHandlers = handlers.get(event.getType());
-            classHandlers.stream().forEach(c
-                    -> c.handle(event)
-            );
+            synchronized (classHandlers) {
+                classHandlers.stream().forEach(c
+                        -> c.handle(event)
+                );
+            }
         }
 
         LOG.info("sendEvent() - end;");

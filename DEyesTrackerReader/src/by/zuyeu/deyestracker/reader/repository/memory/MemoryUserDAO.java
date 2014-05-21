@@ -41,4 +41,13 @@ public class MemoryUserDAO implements UserDAO {
         LOG.info("saveUser() - end: added = {}", added);
     }
 
+    @Override
+    public User findUser(String login, String password) {
+        LOG.info("findUser() - start: login = {}, pass = {}", login, password);
+        User user = users.stream().filter(u
+                -> (u.getLogin().equalsIgnoreCase(login) && u.getPassword().equals(password))).findAny().get();
+        LOG.info("findUser() - end: user = {}", user);
+        return user;
+    }
+
 }

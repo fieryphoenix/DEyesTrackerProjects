@@ -15,6 +15,6 @@ import by.zuyeu.deyestracker.core.exception.DEyesTrackerException;
  */
 public interface ITeacher {
 
-    DetectFaceSample getStudyResult(StudyProcessEvent.Region region) throws DEyesTrackerException;
+    DetectFaceSample getStudyResult(StudyProcessEvent.StudyRegion region) throws DEyesTrackerException;
 
 }

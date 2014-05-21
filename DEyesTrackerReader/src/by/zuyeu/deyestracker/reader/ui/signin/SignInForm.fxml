@@ -12,8 +12,8 @@
         <String fx:value="background" />
     </styleClass>
     <children>
-        <TextField id="fLogin" layoutX="14.0" layoutY="14.0" promptText="%page.login.labels.name" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="20.0" />
-        <TextField id="fPassword" layoutX="14.0" layoutY="55.0" promptText="%page.login.labels.password" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="20.0" />
+        <TextField id="fLogin" fx:id="fLogin" layoutX="14.0" layoutY="14.0" promptText="%page.login.labels.name" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="20.0" />
+        <TextField id="fPassword" fx:id="fPassword" layoutX="14.0" layoutY="55.0" promptText="%page.login.labels.password" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="20.0" />
         <Button layoutX="87.0" layoutY="100.0" mnemonicParsing="false" onAction="#handleSignIn" prefHeight="31.0" prefWidth="151.0" text="%page.login.button.login" AnchorPane.rightAnchor="20.0" />
         <Separator layoutX="14.0" layoutY="150.0" prefWidth="200.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
         <Button layoutX="50.0" layoutY="171.0" mnemonicParsing="false" onAction="#handleStartWithTeaching" prefHeight="31.0" prefWidth="251.0" styleClass="signup-button" text="%page.login.buttons.signup" AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" />

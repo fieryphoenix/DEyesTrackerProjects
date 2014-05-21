@@ -9,8 +9,8 @@ import by.zuyeu.deyestracker.core.detection.learning.TeacherWithUser;
 import by.zuyeu.deyestracker.core.detection.model.DetectFaceSample;
 import by.zuyeu.deyestracker.core.detection.model.StudyResult;
 import by.zuyeu.deyestracker.core.eda.event.CoreEvent;
-import by.zuyeu.deyestracker.core.eda.router.EventRouter;
 import by.zuyeu.deyestracker.core.eda.router.IRouter;
+import by.zuyeu.deyestracker.core.eda.router.RouterFactory;
 import by.zuyeu.deyestracker.core.exception.DEyesTrackerException;
 import by.zuyeu.deyestracker.core.exception.DEyesTrackerExceptionCode;
 import by.zuyeu.deyestracker.core.util.ExceptionToEventConverter;
@@ -145,7 +145,7 @@ public class ScreenPointTracker {
     private void initRouter() {
         LOG.trace("initRouter - start;");
 
-        this.router = new EventRouter();
+        this.router = RouterFactory.getRouter(RouterFactory.RouterType.EVENT);
 
         LOG.trace("initRouter - end;");
     }

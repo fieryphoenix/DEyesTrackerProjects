@@ -74,14 +74,19 @@
                     </fill>
                 </Circle>
                 <Rectangle arcHeight="20.0" arcWidth="20.0" fill="#384754" height="122.0" stroke="BLACK" strokeType="INSIDE" width="241.0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="TOP" />
-                <Label id="lText" fx:id="lText" alignment="CENTER" contentDisplay="CENTER" prefHeight="102.0" prefWidth="203.0" text="|" textFill="#e4dada" wrapText="true" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="TOP">
-                    <GridPane.margin>
-                        <Insets left="5.0" right="5.0" top="10.0" />
-                    </GridPane.margin>
-                    <font>
-                        <Font size="14.0" />
-                    </font>
-                </Label>
+            <VBox alignment="TOP_CENTER" prefHeight="108.0" prefWidth="213.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+               <children>
+                      <Label id="lText" fx:id="lText" alignment="CENTER" contentDisplay="CENTER" prefHeight="102.0" prefWidth="213.0" text="|" textFill="#e4dada" wrapText="true" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="TOP">
+                          <GridPane.margin>
+                              <Insets left="5.0" right="5.0" top="10.0" />
+                          </GridPane.margin>
+                          <font>
+                              <Font size="14.0" />
+                          </font>
+                      </Label>
+                  <Label fx:id="lQuality" alignment="TOP_CENTER" contentDisplay="CENTER" prefHeight="40.0" prefWidth="213.0" text="..." />
+               </children>
+            </VBox>
             </children>
         </GridPane>
     </children>

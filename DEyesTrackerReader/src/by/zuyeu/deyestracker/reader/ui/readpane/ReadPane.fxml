@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.geometry.*?>
 <?import java.lang.*?>
 <?import java.net.*?>
 <?import java.util.*?>
@@ -7,28 +10,51 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane id="AnchorPane" prefHeight="768.0" prefWidth="1024.0" styleClass="background" stylesheets="@../css/Common.css" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8" fx:controller="by.zuyeu.deyestracker.reader.ui.readpane.ReadPaneController">
+<StackPane minHeight="480.0" minWidth="640.0" prefHeight="600.0" prefWidth="1000.0" styleClass="background" stylesheets="@../css/Common.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="by.zuyeu.deyestracker.reader.ui.readpane.ReadPaneController">
    <children>
-      <MenuBar layoutX="35.0" layoutY="18.0" prefHeight="33.0" prefWidth="1024.0" styleClass="profileTitle" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-        <menus>
-          <Menu mnemonicParsing="false" text="File">
-            <items>
-                  <MenuItem mnemonicParsing="false" text="Start Teaching" />
-                  <MenuItem mnemonicParsing="false" text="Sign Out" />
-                  <MenuItem mnemonicParsing="false" text="Unspecified Action">
-                     <graphic>
-                        <Separator prefWidth="200.0" />
-                     </graphic>
-                  </MenuItem>
-              <MenuItem mnemonicParsing="false" onAction="#closeButtonAction" text="Close" />
-            </items>
-          </Menu>
-          <Menu mnemonicParsing="false" text="Help">
-            <items>
-              <MenuItem mnemonicParsing="false" text="About" />
-            </items>
-          </Menu>
-        </menus>
-      </MenuBar>
+      <BorderPane prefHeight="200.0" prefWidth="200.0">
+         <top>
+            <MenuBar prefHeight="30.0" prefWidth="1024.0" styleClass="m-extend" BorderPane.alignment="CENTER">
+              <menus>
+                <Menu mnemonicParsing="false" styleClass="m-extend" text="File">
+                  <items>
+                        <MenuItem mnemonicParsing="false" styleClass="m-extend" text="Start Teaching" />
+                        <MenuItem mnemonicParsing="false" styleClass="m-extend" text="Sign Out" />
+                    <MenuItem mnemonicParsing="false" onAction="#closeButtonAction" styleClass="m-extend" text="Close" />
+                  </items>
+                </Menu>
+                <Menu mnemonicParsing="false" styleClass="m-extend" text="Help">
+                  <items>
+                    <MenuItem mnemonicParsing="false" styleClass="m-extend" text="About" />
+                  </items>
+                </Menu>
+              </menus>
+               <padding>
+                  <Insets bottom="1.0" />
+               </padding>
+            </MenuBar>
+         </top>
+         <center>
+            <GridPane BorderPane.alignment="CENTER">
+              <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="2.0" prefWidth="100.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="2.0" prefWidth="100.0" />
+              </columnConstraints>
+              <rowConstraints>
+                <RowConstraints minHeight="10.0" percentHeight="2.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" percentHeight="2.0" prefHeight="30.0" vgrow="SOMETIMES" />
+              </rowConstraints>
+               <children>
+                  <ScrollPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                     <content>
+                        <TextFlow fx:id="textFlow" prefHeight="545.0" prefWidth="959.0" />
+                     </content>
+                  </ScrollPane>
+               </children>
+            </GridPane>
+         </center>
+      </BorderPane>
    </children>
-</AnchorPane>
+</StackPane>

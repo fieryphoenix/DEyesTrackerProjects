@@ -10,6 +10,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.text.TextFlow;
 import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,14 +25,8 @@ public class ReadPaneController extends AppController {
     private static final Logger LOG = LoggerFactory.getLogger(ReadPaneController.class);
 
     private ResourceBundle bundle;
-
     @FXML
-    private void closeButtonAction(ActionEvent event) {
-        // get a handle to the stage
-        Stage stage = application.getStage();
-        // do what you have to do
-        stage.close();
-    }
+    private TextFlow textFlow;
 
     /**
      * Initializes the controller class.
@@ -42,6 +37,19 @@ public class ReadPaneController extends AppController {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         this.bundle = rb;
+    }
+
+    /**
+     * Close application
+     *
+     * @param event
+     */
+    @FXML
+    public void closeButtonAction(ActionEvent event) {
+        LOG.info("closeButtonAction() - start;");
+        Stage stage = application.getStage();
+        stage.close();
+        LOG.info("closeButtonAction() - end;");
     }
 
 }

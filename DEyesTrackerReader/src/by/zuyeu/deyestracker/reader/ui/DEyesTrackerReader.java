@@ -34,6 +34,8 @@ public class DEyesTrackerReader extends Application {
 
     private static final Logger LOG = LoggerFactory.getLogger(DEyesTrackerReader.class);
 
+    private static final String TEST_PAGE = "signin/ReadPane.fxml";
+
     private static final String START_PAGE = "signin/SignInForm.fxml";
     private static final String READER_PAGE = "readpane/ReadPane.fxml";
     private static final String BUNDLE = "by.zuyeu.deyestracker.reader.ui.bundle.messages";
@@ -54,7 +56,7 @@ public class DEyesTrackerReader extends Application {
         Scene scene = new Scene(root);
         stage.setScene(scene);
 
-        changeView(START_PAGE, locale);
+        changeView(TEST_PAGE, locale);
         stage.show();
     }
 

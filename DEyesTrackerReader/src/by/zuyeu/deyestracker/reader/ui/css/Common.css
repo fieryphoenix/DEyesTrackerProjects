@@ -92,6 +92,7 @@
         rgba(255,255,255,0));
     -fx-effect: dropshadow( one-pass-box , rgb(47, 6, 105, 0.9), 10, 0.0 , 0 , 0 );
 }
+
 .button:pressed {
     -fx-effect: dropshadow( one-pass-box , rgb(0, 69, 255, 0.9), 10, 0.2 , 0 , 0 );
 }
@@ -131,3 +132,32 @@
     -fx-text-fill: linear-gradient(white,yellow);
     -fx-padding: 2 4 2 4;
 }
+
+.m-extend {
+    -fx-background-image: url("../image/CoarseGrid.png");
+    -fx-background-repeat: repeat;
+    -fx-background-color:
+        linear-gradient(#38424b 0%, #1f2429 20%, #191d22 100%),
+        linear-gradient(#20262b, #191d22),
+        radial-gradient(center 50% 0%, radius 100%, rgba(114,131,148,0.9), rgba(255,255,255,0));
+    -fx-border-image:  url("../image/CoarseGrid.png");
+    -fx-border-image-repeat:  repeat;
+    -fx-border-color:
+        linear-gradient(#38424b 0%, #1f2429 20%, #191d22 100%),
+        linear-gradient(#20262b, #191d22),
+        radial-gradient(center 50% 0%, radius 100%, rgba(114,131,148,0.9), rgba(255,255,255,0));
+}
+
+.m-extend:focused , .m-extend:hover , .m-extend:focus {
+    -fx-background-color:
+        linear-gradient(#cccc00 0%, #333300 20%, #333333 100%),
+        linear-gradient(#333300, #330000),
+        radial-gradient(center 50% 0%, radius 100%, rgba(114,131,148,0.9), rgba(255,255,255,0));
+    -fx-effect: dropshadow( one-pass-box , rgb(47, 6, 105, 0.9), 10, 0.2 , 1 , 1 );
+}
+
+.m-extend:pressed, .m-extend:pressed .label:hover, .m-extend:focused:pressed .label {
+    -fx-text-fill: #ff9900;
+    -fx-effect: dropshadow( three-pass-box , #ff9900, 15, 0.0 , 0 , 0 );
+}
+

@@ -16,16 +16,23 @@
          <top>
             <MenuBar prefHeight="30.0" prefWidth="1024.0" styleClass="m-extend" BorderPane.alignment="CENTER">
               <menus>
-                <Menu mnemonicParsing="false" styleClass="m-extend" text="File">
+                <Menu mnemonicParsing="false" styleClass="m-extend" text="%page.reader.menu.file">
                   <items>
-                        <MenuItem mnemonicParsing="false" styleClass="m-extend" text="Start Teaching" />
-                        <MenuItem mnemonicParsing="false" styleClass="m-extend" text="Sign Out" />
-                    <MenuItem mnemonicParsing="false" onAction="#closeButtonAction" styleClass="m-extend" text="Close" />
+                        <MenuItem mnemonicParsing="false" onAction="#openFileButtonAction" styleClass="m-extend" text="%page.reader.menu.file.open" />
+                        <SeparatorMenuItem mnemonicParsing="false" />
+                        <MenuItem mnemonicParsing="false" onAction="#logoutButtonAction" styleClass="m-extend" text="%page.reader.menu.file.signout" />
+                        <SeparatorMenuItem mnemonicParsing="false" />
+                    <MenuItem mnemonicParsing="false" onAction="#closeButtonAction" styleClass="m-extend" text="%page.reader.menu.file.exit" />
                   </items>
                 </Menu>
-                <Menu mnemonicParsing="false" styleClass="m-extend" text="Help">
+                  <Menu mnemonicParsing="false" styleClass="m-extend" text="%page.reader.menu.detect">
+                     <items>
+                        <MenuItem mnemonicParsing="false" onAction="#teachingButtonAction" styleClass="m-extend" text="%page.reader.menu.detect.teaching" />
+                     </items>
+                  </Menu>
+                <Menu mnemonicParsing="false" styleClass="m-extend" text="%page.reader.menu.help">
                   <items>
-                    <MenuItem mnemonicParsing="false" styleClass="m-extend" text="About" />
+                    <MenuItem mnemonicParsing="false" styleClass="m-extend" text="%page.reader.menu.help.about" />
                   </items>
                 </Menu>
               </menus>
@@ -47,7 +54,7 @@
                 <RowConstraints minHeight="10.0" percentHeight="2.0" prefHeight="30.0" vgrow="SOMETIMES" />
               </rowConstraints>
                <children>
-                  <ScrollPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                  <ScrollPane fx:id="spText" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
                      <content>
                         <TextFlow fx:id="textFlow" prefHeight="545.0" prefWidth="959.0" />
                      </content>

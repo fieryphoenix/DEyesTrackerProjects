@@ -61,6 +61,7 @@ public class SignInFormController extends AppController {
     private void processLogin() {
         final UserDAO userDAO = factory.getUserDAO();
         if (userDAO.checkUser(fLogin.getText(), fPassword.getText())) {
+            application.getSession().put("user", userDAO.findUser(fLogin.getText(), fPassword.getText()));
             application.openReaderPane();
         } else {
             LOG.debug("errors");

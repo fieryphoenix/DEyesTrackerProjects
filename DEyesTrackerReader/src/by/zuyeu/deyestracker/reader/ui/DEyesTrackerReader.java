@@ -13,13 +13,16 @@ import by.zuyeu.deyestracker.reader.repository.DAOFactory;
 import by.zuyeu.deyestracker.teacher.model.AppEvent;
 import by.zuyeu.deyestracker.teacher.ui.DEyesTrackerTeacher;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 import java.util.ResourceBundle;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.layout.AnchorPane;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
@@ -34,8 +37,6 @@ public class DEyesTrackerReader extends Application {
 
     private static final Logger LOG = LoggerFactory.getLogger(DEyesTrackerReader.class);
 
-    private static final String TEST_PAGE = "signin/ReadPane.fxml";
-
     private static final String START_PAGE = "signin/SignInForm.fxml";
     private static final String READER_PAGE = "readpane/ReadPane.fxml";
     private static final String BUNDLE = "by.zuyeu.deyestracker.reader.ui.bundle.messages";
@@ -45,18 +46,20 @@ public class DEyesTrackerReader extends Application {
     private DAOFactory factory;
     private final Locale locale = Locale.ENGLISH;
     private final IRouter router = RouterFactory.getRouter(RouterFactory.RouterType.EVENT);
-    private RegisterAndTeachingHandler registerAndTeachingHandler;
+    private Map<Object, Object> session = new HashMap<>();
 
     @Override
     public void start(Stage stage) throws Exception {
         this.stage = stage;
         factory = DAOFactory.getFactory(DAOFactory.FactoryType.MEMORY);
+        //TODO - delete mock
+        factory.getUserDAO().saveUser(new User("q", "q"));
 
         final StackPane root = new StackPane();
         Scene scene = new Scene(root);
         stage.setScene(scene);
 
-        changeView(TEST_PAGE, locale);
+        changeView(START_PAGE, locale);
         stage.show();
     }
 
@@ -64,7 +67,7 @@ public class DEyesTrackerReader extends Application {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader();
             fxmlLoader.setResources(ResourceBundle.getBundle(BUNDLE, locale));
-            Pane pane = (AnchorPane) fxmlLoader.load(this.getClass().getResource(fxml).openStream());
+            Pane pane = fxmlLoader.load(this.getClass().getResource(fxml).openStream());
             final AppController controller = fxmlLoader.<AppController>getController();
             controller.setFactory(factory);
             controller.setApplication(this);
@@ -80,6 +83,7 @@ public class DEyesTrackerReader extends Application {
 
     public void openLogin() {
         LOG.info("openLogin() - start;");
+        session.put("user", null);
         changeView(START_PAGE, locale);
         stage.setFullScreen(false);
         stage.setResizable(false);
@@ -89,16 +93,25 @@ public class DEyesTrackerReader extends Application {
     public void openReaderPane() {
         LOG.info("openReaderPane() - start;");
         // delete handler
+        final RegisterAndTeachingHandler registerAndTeachingHandler = (RegisterAndTeachingHandler) session.remove("teachHandler");
         router.deleteHandler(AppEvent.class, registerAndTeachingHandler);
         changeView(READER_PAGE, locale);
         stage.setFullScreen(true);
         stage.setResizable(false);
+        stage.getScene().addEventFilter(KeyEvent.KEY_PRESSED, (KeyEvent evt) -> {
+            if (evt.getCode().equals(KeyCode.ESCAPE)) {
+                stage.close();
+            }
+        });
         LOG.info("openReaderPane() - end;");
     }
 
     public void openTeaching(User student) {
+        LOG.info("openTeaching() - start: student = {}openTeaching", student);
         final DEyesTrackerTeacher dEyesTrackerTeacher = new DEyesTrackerTeacher();
-        registerAndTeachingHandler = new RegisterAndTeachingHandler(this, student, factory);
+        session.put("user", student);
+        final RegisterAndTeachingHandler registerAndTeachingHandler = new RegisterAndTeachingHandler(this, student, factory);
+        session.put("teachHandler", registerAndTeachingHandler);
         router.registerHandler(AppEvent.class, registerAndTeachingHandler);
         Platform.runLater(() -> {
             try {
@@ -108,6 +121,7 @@ public class DEyesTrackerReader extends Application {
                 DialogsFrame.showOKDialog(stage, ex.getMessage());
             }
         });
+        LOG.info("openTeaching() - end;");
     }
 
     public Stage getStage() {
@@ -124,6 +138,10 @@ public class DEyesTrackerReader extends Application {
 
     public IRouter getRouter() {
         return router;
+    }
+
+    public Map<Object, Object> getSession() {
+        return session;
     }
 
     /**

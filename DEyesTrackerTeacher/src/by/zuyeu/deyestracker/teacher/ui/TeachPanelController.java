@@ -68,7 +68,9 @@ public class TeachPanelController implements Initializable {
             }
         });
         router.registerHandler(QualityEvent.class, new QualityHandler(lQuality));
-        new ScenarioController().start();
+        final ScenarioController t = new ScenarioController();
+        t.setDaemon(true);
+        t.start();
     }
 
     public void setTeachPacket(ResultPacket teachPacket) {

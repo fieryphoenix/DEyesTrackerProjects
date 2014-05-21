@@ -49,6 +49,7 @@ public class CameraFrameCapture implements IFrameCapture {
         if (capture.isOpened()) {
             startCapturing();
         } else {
+            stop();
             throw new DEyesTrackerException(DEyesTrackerExceptionCode.OPEN_CAMERA_FAIL);
         }
     }
@@ -82,6 +83,7 @@ public class CameraFrameCapture implements IFrameCapture {
                 Thread.sleep(1000);
             } catch (InterruptedException ex) {
                 LOG.error(ex.getMessage());
+                stop();
                 throw new DEyesTrackerException(DEyesTrackerExceptionCode.OPEN_CAMERA_FAIL, "capture init failure");
             }
         }

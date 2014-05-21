@@ -101,7 +101,7 @@ public class FaceInfoSampler implements ISampler {
             sample.setFace(mainFace);
             eyes = getEyesRegions(mainFace, webcamImage);
         }
-        if (mainFace != null && eyes != null) {
+        if (mainFace != null && eyes != null && eyes.length > 0) {
             final int faceCenter = mainFace.x + mainFace.width / 2;
 
             final Rect leftEye = Arrays.stream(eyes).max(comparator).get();

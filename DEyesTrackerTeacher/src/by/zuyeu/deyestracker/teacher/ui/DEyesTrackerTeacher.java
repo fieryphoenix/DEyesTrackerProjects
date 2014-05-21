@@ -11,6 +11,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 
 /**
@@ -27,20 +28,20 @@ public class DEyesTrackerTeacher extends Application {
     public void start(Stage stage) throws Exception {
         FXMLLoader fxmlLoader = new FXMLLoader();
         Parent root = fxmlLoader.load(getClass().getResource(TEACH_PANEL).openStream());
-        TeachPanelController controller = fxmlLoader.<TeachPanelController>getController();
+        final TeachPanelController controller = fxmlLoader.<TeachPanelController>getController();
         controller.setTeachPacket(teachPacket);
 
         final Scene scene = new Scene(root);
-        scene.setOnKeyPressed(t -> {
-            if (t.getCode() == KeyCode.ESCAPE) {
-                Stage sb = (Stage) scene.getWindow();
-                sb.close();
-            }
-        });
-
         stage.setScene(scene);
         stage.setFullScreen(true);
         stage.setResizable(false);
+
+        stage.getScene().addEventFilter(KeyEvent.KEY_PRESSED, (KeyEvent evt) -> {
+            if (evt.getCode().equals(KeyCode.ESCAPE)) {
+                stage.close();
+            }
+        });
+
         stage.show();
     }
 

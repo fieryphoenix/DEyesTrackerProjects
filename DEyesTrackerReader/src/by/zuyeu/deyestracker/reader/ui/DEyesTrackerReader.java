@@ -42,7 +42,7 @@ public class DEyesTrackerReader extends Application {
     private static final String BUNDLE = "by.zuyeu.deyestracker.reader.ui.bundle.messages";
     private static final String COMMON_CSS = "/by/zuyeu/deyestracker/reader/ui/css/Common.css";
 
-    private final Locale locale = Locale.ENGLISH;
+    private final Locale locale = new Locale("ru");
     private final IRouter router = RouterFactory.getRouter(RouterFactory.RouterType.EVENT);
     private final Map<Object, Object> session = new HashMap<>();
 

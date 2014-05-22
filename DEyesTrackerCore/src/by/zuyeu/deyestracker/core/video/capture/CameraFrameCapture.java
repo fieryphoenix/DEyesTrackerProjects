@@ -101,7 +101,9 @@ public class CameraFrameCapture implements IFrameCapture {
         Mat next = null;
         lock.readLock().lock();
         try {
-            next = frames.poll();
+            if (!frames.isEmpty()) {
+                next = frames.poll();
+            }
         } finally {
             lock.readLock().unlock();
         }

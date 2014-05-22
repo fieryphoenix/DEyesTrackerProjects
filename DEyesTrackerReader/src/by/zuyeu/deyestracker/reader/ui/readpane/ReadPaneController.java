@@ -5,9 +5,18 @@
  */
 package by.zuyeu.deyestracker.reader.ui.readpane;
 
+import by.zuyeu.deyestracker.core.detection.model.StudyResult;
+import by.zuyeu.deyestracker.core.detection.tracker.ScreenPointTracker;
+import by.zuyeu.deyestracker.core.eda.event.MoveEvent;
+import by.zuyeu.deyestracker.core.exception.DEyesTrackerException;
+import by.zuyeu.deyestracker.core.video.sampler.FaceInfoSampler;
+import by.zuyeu.deyestracker.core.video.sampler.ISampler;
+import by.zuyeu.deyestracker.reader.handler.ScrollMoveHandler;
+import by.zuyeu.deyestracker.reader.model.StudyResult2;
 import by.zuyeu.deyestracker.reader.model.User;
 import by.zuyeu.deyestracker.reader.ui.AppController;
 import by.zuyeu.deyestracker.reader.ui.DialogsFrame;
+import by.zuyeu.deyestracker.reader.util.ObjectTransformer;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -35,13 +44,16 @@ import org.slf4j.LoggerFactory;
 public class ReadPaneController extends AppController {
 
     private static final Logger LOG = LoggerFactory.getLogger(ReadPaneController.class);
+    private static final String ERROR_READ_FILE = "page.reader.errors.fileread";
 
     private ResourceBundle bundle;
     @FXML
     private TextFlow textFlow;
     @FXML
     private ScrollPane spText;
+
     private boolean scrollExist;
+    private ScreenPointTracker tracker;
 
     /**
      * Initializes the controller class.
@@ -94,7 +106,7 @@ public class ReadPaneController extends AppController {
 
     public void openFileButtonAction(ActionEvent event) {
         LOG.info("openFileButtonAction() - start;");
-        addScrollTracker();
+
         FileChooser fileChooser = new FileChooser();
         //TODO extract text to bundle
         fileChooser.setTitle("Open Text File");
@@ -106,16 +118,19 @@ public class ReadPaneController extends AppController {
                 final String text = FileUtils.readFileToString(selectedFile);
                 textFlow.getChildren().clear();
                 textFlow.getChildren().add(new Text(text));
+                addScrollTracker();
             } catch (IOException ex) {
                 LOG.warn("openFileButtonAction", ex);
                 DialogsFrame.showOKDialog(application.getStage(), bundle.getString(ERROR_READ_FILE));
+            } catch (DEyesTrackerException ex) {
+                LOG.warn("openFileButtonAction", ex);
+                DialogsFrame.showOKDialog(application.getStage(), "Unable to run tracker");
             }
         }
         LOG.info("openFileButtonAction() - end;");
     }
-    private static final String ERROR_READ_FILE = "page.reader.errors.fileread";
 
-    private void addScrollTracker() {
+    private void addScrollTracker() throws DEyesTrackerException {
         LOG.info("addScrollTracker() - start;");
         if (!scrollExist) {
             application.getStage().addEventFilter(KeyEvent.KEY_PRESSED, (KeyEvent evt) -> {
@@ -134,8 +149,54 @@ public class ReadPaneController extends AppController {
                     );
                 }
             });
+            final Thread t = new Thread() {
+                @Override
+                public void run() {
+                    runEyeTracker();
+                }
+            };
+            t.setDaemon(true);
+            t.start();
+
             scrollExist = true;
         }
         LOG.info("addScrollTracker() - end;");
+    }
+
+    private void runEyeTracker() {
+        final StudyResult result = findTeachingResult();
+        try {
+            final ISampler sampler = new FaceInfoSampler();
+            tracker = new ScreenPointTracker.ScreenPointTrackerBuilder().setRouter(application.getRouter()).setSampler(sampler).setStudyResult(result).createScreenPointTracker();
+            tracker.start();
+        } catch (DEyesTrackerException e) {
+            LOG.warn("addScrollTracker", e);
+            releaseTracker();
+            DialogsFrame.showOKDialog(application.getStage(), "Add eye scroller failed!");//FIXME
+        }
+        application.getRouter().registerHandler(MoveEvent.class, new ScrollMoveHandler(spText));
+    }
+
+    private StudyResult findTeachingResult() {
+        User user = (User) application.getSession().get("user");
+        StudyResult2 result2 = factory.getTeachResultDAO().findStudyResultByUser(user);
+        StudyResult result = ObjectTransformer.transformStudyResult2ToCVType(result2);
+        return result;
+    }
+
+    @Override
+    public void release() {
+        releaseTracker();
+        LOG.info("release - OK");
+    }
+
+    private void releaseTracker() {
+        if (tracker != null) {
+            try {
+                tracker.stop();
+            } catch (DEyesTrackerException ex) {
+                LOG.error("release", ex);
+            }
+        }
     }
 }

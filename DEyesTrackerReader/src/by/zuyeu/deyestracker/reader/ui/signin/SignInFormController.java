@@ -99,4 +99,9 @@ public class SignInFormController extends AppController {
         return result;
     }
 
+    @Override
+    public void release() {
+        LOG.info("release - OK");
+    }
+
 }

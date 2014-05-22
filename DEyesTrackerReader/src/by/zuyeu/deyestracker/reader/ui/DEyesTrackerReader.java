@@ -42,11 +42,13 @@ public class DEyesTrackerReader extends Application {
     private static final String BUNDLE = "by.zuyeu.deyestracker.reader.ui.bundle.messages";
     private static final String COMMON_CSS = "/by/zuyeu/deyestracker/reader/ui/css/Common.css";
 
-    private Stage stage;
-    private DAOFactory factory;
     private final Locale locale = Locale.ENGLISH;
     private final IRouter router = RouterFactory.getRouter(RouterFactory.RouterType.EVENT);
-    private Map<Object, Object> session = new HashMap<>();
+    private final Map<Object, Object> session = new HashMap<>();
+
+    private Stage stage;
+    private DAOFactory factory;
+    private AppController currentController;
 
     @Override
     public void start(Stage stage) throws Exception {
@@ -71,6 +73,7 @@ public class DEyesTrackerReader extends Application {
             final AppController controller = fxmlLoader.<AppController>getController();
             controller.setFactory(factory);
             controller.setApplication(this);
+            this.currentController = controller;
             // replace the content
             StackPane content = (StackPane) stage.getScene().getRoot();
             content.getChildren().clear();

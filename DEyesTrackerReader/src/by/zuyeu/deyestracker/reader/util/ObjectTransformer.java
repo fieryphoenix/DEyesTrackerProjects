@@ -58,6 +58,15 @@ public class ObjectTransformer {
         return point2;
     }
 
+    public static StudyResult transformStudyResult2ToCVType(StudyResult2 sample2) {
+        final DetectFaceSample tl = transformDetectSample2ToCVType(sample2.getTl());
+        final DetectFaceSample bl = transformDetectSample2ToCVType(sample2.getBl());
+        final DetectFaceSample tr = transformDetectSample2ToCVType(sample2.getTr());
+        final DetectFaceSample br = transformDetectSample2ToCVType(sample2.getBr());
+        final StudyResult result = new StudyResult(tl, bl, tr, br);
+        return result;
+    }
+
     public static DetectFaceSample transformDetectSample2ToCVType(DetectFaceSample2 sample2) {
         final DetectFaceSample sample = new DetectFaceSample();
         sample.setFace(transformRect2ToCVType(sample2.getFace()));

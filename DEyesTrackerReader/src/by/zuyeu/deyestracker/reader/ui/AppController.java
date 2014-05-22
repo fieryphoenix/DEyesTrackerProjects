@@ -21,15 +21,9 @@ public abstract class AppController implements Initializable {
         this.factory = factory;
     }
 
-    public DAOFactory getFactory() {
-        return factory;
-    }
-
-    public DEyesTrackerReader getApplication() {
-        return application;
-    }
-
     public void setApplication(DEyesTrackerReader application) {
         this.application = application;
     }
+
+    public abstract void release();
 }

@@ -5,6 +5,8 @@
  */
 package by.zuyeu.deyestracker.core.detection.tracker;
 
+import org.opencv.core.Point;
+
 /**
  *
  * @author Fieryphoenix
@@ -22,6 +24,10 @@ public class ScreenPointBorder {
 
     public double getHeight() {
         return bottomY - topY;
+    }
+
+    public Point getCenter() {
+        return new Point(getWidth() / 2, getHeight() / 2);
     }
 
     public double getLeftX() {

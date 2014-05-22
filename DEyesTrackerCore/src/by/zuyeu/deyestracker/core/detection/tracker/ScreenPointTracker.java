@@ -80,12 +80,13 @@ public class ScreenPointTracker {
     }
 
     private static final Logger LOG = LoggerFactory.getLogger(ScreenPointTracker.class);
+    private static final double TRESHOLD_CENTER_VALUE = 0.5;//FIXME
     private static final double TRESHOLD_Y_VALUE = 0.5;//FIXME
     private static final double TRESHOLD_X_VALUE = 0.05;//FIXME
 
     private IRouter router;
     private ISampler sampler;
-    private CircularFifoQueue<DetectFaceSample> samples;
+    private final CircularFifoQueue<DetectFaceSample> samples;
     private StudyResult studyResult;
     private boolean isStopped;
     private final Size screenSize;
@@ -200,6 +201,7 @@ public class ScreenPointTracker {
         pointBorder.setTopY(defineMedian(studyResult.getTopLeft(), studyResult.getTopRight()).y);
         pointBorder.setLeftX(defineMedian(studyResult.getTopLeft(), studyResult.getBottomLeft()).x);
         pointBorder.setRightX(defineMedian(studyResult.getTopRight(), studyResult.getBottomRight()).x);
+        LOG.debug("defineScreenBorder - end: pointBorder = {}", pointBorder);
     }
 
     private Point defineMedian(DetectFaceSample s1, DetectFaceSample s2) {
@@ -220,19 +222,22 @@ public class ScreenPointTracker {
     }
 
     private void tresholdMove(Point nextMedian, Point lastMedian) {
-        LOG.trace("tresholdMove() - start;");
-        boolean moveX = (nextMedian.x - lastMedian.x) > TRESHOLD_X_VALUE;
-        boolean moveY = (nextMedian.y - lastMedian.y) > TRESHOLD_Y_VALUE;
-        if (moveX || moveY) {
-            scaleToBorderAndPublicMove(nextMedian, lastMedian);
+        LOG.debug("tresholdMove() - start: lastMedian = {}, nextMedian = {}", lastMedian, nextMedian);
+        boolean moveX = Math.abs(nextMedian.x - lastMedian.x) > TRESHOLD_X_VALUE;
+        boolean moveY = Math.abs(nextMedian.y - lastMedian.y) > TRESHOLD_Y_VALUE;
+        Point center = pointBorder.getCenter();
+        boolean moveXFromCenter = Math.abs(nextMedian.x - center.x) > TRESHOLD_CENTER_VALUE;
+        boolean moveYFromCenter = Math.abs(nextMedian.x - center.x) > TRESHOLD_CENTER_VALUE;
+        if (moveX || moveY || moveXFromCenter || moveYFromCenter) {
+            scaleToBorderAndPublicMove(nextMedian, lastMedian, center);
         }
-        LOG.trace("tresholdMove() - end;");
+        LOG.debug("tresholdMove() - end;");
     }
 
-    private void scaleToBorderAndPublicMove(Point nextMedian, Point lastMedian) {
+    private void scaleToBorderAndPublicMove(Point nextMedian, Point lastMedian, Point center) {
         Point screenViewPoint = calculateViewPointBoundToBorders(nextMedian);
-        Point oldScreenViewPoint = calculateViewPointBoundToBorders(nextMedian);
-        publishMoveEvent(new MoveEvent(oldScreenViewPoint, screenViewPoint));
+        Point oldScreenViewPoint = calculateViewPointBoundToBorders(lastMedian);
+        publishMoveEvent(new MoveEvent(oldScreenViewPoint, screenViewPoint, center));
     }
 
     private Point calculateViewPointBoundToBorders(Point nextMedian) {
@@ -240,11 +245,13 @@ public class ScreenPointTracker {
         // shift from left border
         double width = pointBorder.getWidth();
         double xShift = nextMedian.x - pointBorder.getLeftX();
+        width = Math.max(width, xShift);
         double viewX = screenSize.width / width * xShift;
         //shift from top border
-        double heght = pointBorder.getHeight();
+        double height = pointBorder.getHeight();
         double yShift = nextMedian.y - pointBorder.getTopY();
-        double viewY = screenSize.height / heght * yShift;
+        height = Math.max(height, yShift);
+        double viewY = screenSize.height / height * yShift;
         Point screenViewPoint = new Point(viewX, viewY);
         LOG.debug("calculateViewPointBoundToBorders() - end: point = {}", screenViewPoint);
         return screenViewPoint;

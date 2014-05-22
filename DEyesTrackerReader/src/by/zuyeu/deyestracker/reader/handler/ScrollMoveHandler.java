@@ -28,20 +28,30 @@ public class ScrollMoveHandler implements DEyesTrackerHandler<MoveEvent> {
 
     @Override
     public void handle(MoveEvent event) {
+        boolean makeOneMove = false;
         //TODO update logic
         final Point newPosition = event.getNewPosition();
-        final Point oldPosition = event.getOldPosition();
-        if (newPosition.x > oldPosition.x) {
-            moveRight();
-        } else {
-            moveLeft();
+        final Point oldPosition = event.getOldPosition();//TODO add move ration by this param
+        final Point center = event.getViewCenter();
+        if (newPosition.x > center.x) {
+            LOG.trace("decide to right");
+            //makeOneMove = true;
+            //moveRight();
         }
-        if (newPosition.y > oldPosition.y) {
+        if (!makeOneMove && (newPosition.x < center.x)) {
+            LOG.trace("decide to left");
+            //makeOneMove = true;
+            //moveLeft();
+        }
+        if (!makeOneMove && (newPosition.y > center.y)) {
+            LOG.trace("decide to down");
+            makeOneMove = true;
             moveDown();
-        } else {
+        }
+        if (!makeOneMove && (newPosition.y < center.y)) {
+            LOG.trace("decide to up");
             moveUp();
         }
-
     }
 
     private void moveDown() {

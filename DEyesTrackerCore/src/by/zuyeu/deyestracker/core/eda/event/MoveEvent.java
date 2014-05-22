@@ -16,10 +16,12 @@ public class MoveEvent implements DEyeTrackEvent<MoveEvent> {
 
     private final Point oldPosition;
     private final Point newPosition;
+    private final Point viewCenter;
 
-    public MoveEvent(Point oldPosition, Point newPosition) {
+    public MoveEvent(Point oldPosition, Point newPosition, Point viewCenter) {
         this.oldPosition = oldPosition;
         this.newPosition = newPosition;
+        this.viewCenter = viewCenter;
     }
 
     public Point getOldPosition() {
@@ -30,6 +32,10 @@ public class MoveEvent implements DEyeTrackEvent<MoveEvent> {
         return newPosition;
     }
 
+    public Point getViewCenter() {
+        return viewCenter;
+    }
+
     @Override
     public Class<MoveEvent> getType() {
         return (Class<MoveEvent>) getClass();
@@ -37,9 +43,10 @@ public class MoveEvent implements DEyeTrackEvent<MoveEvent> {
 
     @Override
     public int hashCode() {
-        int hash = 7;
-        hash = 79 * hash + Objects.hashCode(this.oldPosition);
-        hash = 79 * hash + Objects.hashCode(this.newPosition);
+        int hash = 3;
+        hash = 37 * hash + Objects.hashCode(this.oldPosition);
+        hash = 37 * hash + Objects.hashCode(this.newPosition);
+        hash = 37 * hash + Objects.hashCode(this.viewCenter);
         return hash;
     }
 
@@ -58,12 +65,14 @@ public class MoveEvent implements DEyeTrackEvent<MoveEvent> {
         if (!Objects.equals(this.newPosition, other.newPosition)) {
             return false;
         }
+        if (!Objects.equals(this.viewCenter, other.viewCenter)) {
+            return false;
+        }
         return true;
     }
 
     @Override
     public String toString() {
-        return "MoveEvent{" + "oldPosition=" + oldPosition + ", newPosition=" + newPosition + '}';
+        return "MoveEvent{" + "oldPosition=" + oldPosition + ", newPosition=" + newPosition + ", viewCenter=" + viewCenter + '}';
     }
-
 }

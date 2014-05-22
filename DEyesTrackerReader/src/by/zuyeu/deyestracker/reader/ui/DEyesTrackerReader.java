@@ -98,11 +98,13 @@ public class DEyesTrackerReader extends Application {
         // delete handler
         final RegisterAndTeachingHandler registerAndTeachingHandler = (RegisterAndTeachingHandler) session.remove("teachHandler");
         router.deleteHandler(AppEvent.class, registerAndTeachingHandler);
+        //open main reader pane
         changeView(READER_PAGE, locale);
         stage.setFullScreen(true);
         stage.setResizable(false);
         stage.getScene().addEventFilter(KeyEvent.KEY_PRESSED, (KeyEvent evt) -> {
             if (evt.getCode().equals(KeyCode.ESCAPE)) {
+                currentController.release();
                 stage.close();
             }
         });

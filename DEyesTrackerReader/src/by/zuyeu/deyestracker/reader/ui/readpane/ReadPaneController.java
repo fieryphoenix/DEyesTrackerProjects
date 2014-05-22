@@ -167,14 +167,15 @@ public class ReadPaneController extends AppController {
         final StudyResult result = findTeachingResult();
         try {
             final ISampler sampler = new FaceInfoSampler();
+            application.getRouter().registerHandler(MoveEvent.class, new ScrollMoveHandler(spText));
             tracker = new ScreenPointTracker.ScreenPointTrackerBuilder().setRouter(application.getRouter()).setSampler(sampler).setStudyResult(result).createScreenPointTracker();
             tracker.start();
         } catch (DEyesTrackerException e) {
-            LOG.warn("addScrollTracker", e);
+            LOG.warn("runEyeTracker", e);
             releaseTracker();
             DialogsFrame.showOKDialog(application.getStage(), "Add eye scroller failed!");//FIXME
         }
-        application.getRouter().registerHandler(MoveEvent.class, new ScrollMoveHandler(spText));
+
     }
 
     private StudyResult findTeachingResult() {
